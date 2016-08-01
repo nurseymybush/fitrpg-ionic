@@ -1,7 +1,7 @@
 angular.module('mobile.resource.services')
 
-.constant('SERVER_URL', 'http://fitrpg.azurewebsites.net')
-
+//.constant('SERVER_URL', 'http://fitrpg.azurewebsites.net')
+.constant('SERVER_URL', 'http://127.0.0.1:9000')
 .factory('authHttpInterceptor', ['localStorageService', function(localStorageService) {
  return {
    'request': function(config) {

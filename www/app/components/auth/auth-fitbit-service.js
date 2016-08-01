@@ -1,13 +1,16 @@
 angular.module('mobile.authentication.services')
 
-.factory('FitbitLoginService', function ($window, $state, $ionicLoading, $location, localStorageService, $location) {
-  var url = 'http://fitrpg.azurewebsites.net/fitbit/auth';
-  var usernameUrl = 'http://fitrpg.azurewebsites.net/fitbit/getUsername';
+.factory('FitbitLoginService', function ($window, $state, $ionicLoading, localStorageService, $location) {
+  var url = 'http://127.0.0.1:9000/fitbit/auth';
+  var usernameUrl = 'http://127.0.0.1:9000/fitbit/getUsername';
+
   var loginWindow, token, hasToken, userId, hasUserId;
 
   return {
     login: function () {
-      loginWindow = $window.open(url, '_blank', 'location=no,toolbar=no,hidden=yes');
+      console.log("Clicked login");
+      console.log("Contacting Fitbit...");
+      loginWindow = cordova.InAppBrowser.open(url, '_blank', 'location=no,toolbar=no,hidden=yes');
       $ionicLoading.show({
          template: '<p>Contacting Fitbit...</p><i class="icon ion-loading-c"></i>',
          animation: 'fade-in',
@@ -22,6 +25,7 @@ angular.module('mobile.authentication.services')
       });
 
       loginWindow.addEventListener('loadstart', function (event) {
+        console.log(event.url);
           hasToken = event.url.indexOf('?oauth_token=');
           hasUserId = event.url.indexOf('&userId=');
         if (hasToken > -1 && hasUserId > -1) {
