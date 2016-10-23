@@ -1,15 +1,16 @@
 angular.module('mobile.shop.controllers')
 
-.controller('ShopDetailCtrl', function($scope, $stateParams, Shop, User, $ionicPopup, $q) {
+.controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q) {
   $scope.isWeapon = false;
   $scope.shopItem = Shop.get({id : $stateParams.shopId}, function(item){
-    $scope.shopItem.type = util.capitalize($scope.shopItem.type);
+    //$scope.shopItem.type = util.capitalize($scope.shopItem.type);
     if ($scope.shopItem.size === 1) {
       $scope.shopItem.sizeText = 'One-Handed';
     } else if ($scope.shopItem.size === 2) {
       $scope.shopItem.sizeText = 'Two-Handed';
     }
-    if ($scope.shopItem.type === 'Weapon') {
+    //if ($scope.shopItem.type === 'Weapon') {
+    if($scope.showItem.type === 'weapon'){
       $scope.isWeapon = true;
     }
   });
@@ -32,7 +33,8 @@ angular.module('mobile.shop.controllers')
         inventoryId = $scope.user.inventory[$scope.user.inventory.length-1].id+1;
       }
 
-      if ($scope.shopItem.type.toLowerCase() === 'potion') {
+      //if ($scope.shopItem.type.toLowerCase() === 'potion') {
+      if($scope.CheckType() ===  true) {
         var inventory = $scope.user.inventory;
         for (var i=0; i<inventory.length; i++) {
           var item = inventory[i];
@@ -58,7 +60,8 @@ angular.module('mobile.shop.controllers')
   };
 
   $scope.checkType = function() {
-    if ($scope.shopItem.type.toLowerCase() === 'potion') {
+    //if ($scope.shopItem.type.toLowerCase() === 'potion') {
+    if($scope.shopItem.type === 'potion'){
       return true;
     } else {
       return false;

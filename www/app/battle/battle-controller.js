@@ -1,29 +1,28 @@
 angular.module('mobile.battle.controllers')
 
 .controller('BattleCtrl', function(
-    $scope,
-    $q,
-    $window,
-    $cordovaSocialSharing,
-    $ionicPopup,
-    $ionicLoading,
-    $ionicListDelegate,
-    $ionicScrollDelegate,
-    $ionicNavBarDelegate,
-    User,
-    Battle,
-    RandomUser,
-    SoloMissions
-    )
-  {
+  $scope,
+  $q,
+  $window,
+  $cordovaSocialSharing,
+  $ionicPopup,
+  $ionicLoading,
+  $ionicListDelegate,
+  $ionicScrollDelegate,
+  $ionicNavBarDelegate,
+  User,
+  Battle,
+  RandomUser,
+  SoloMissions
+) {
 
   var battles;
 
-  var sendTweet = function (message) {
+  var sendTweet = function(message) {
     $cordovaSocialSharing.shareViaTwitter(message).then(function(result) {
-        // Success!
+      // Success!
     }, function(err) {
-        // An error occured. Show a message to the user
+      // An error occured. Show a message to the user
     });
   };
 
@@ -61,7 +60,7 @@ angular.module('mobile.battle.controllers')
 
   activeTab('friend');
 
-  var loading = setTimeout(function(){
+  var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
@@ -74,7 +73,7 @@ angular.module('mobile.battle.controllers')
 
   var checkLevel = function(user) {
     var newLevel = util.calcLevel(user.fitbit.experience + user.attributes.experience);
-    user.attributes.skillPts = util.calcSkillPoints(user.attributes.skillPts,newLevel,user.attributes.level);
+    user.attributes.skillPts = util.calcSkillPoints(user.attributes.skillPts, newLevel, user.attributes.level);
     user.attributes.level = newLevel;
   };
 
@@ -90,7 +89,7 @@ angular.module('mobile.battle.controllers')
 
   var listOfBattles = function() {
     // make a copy of the $scope.user.missionsVersus
-    for (var i=0; i<$scope.user.missionsVersus.length; i++) {
+    for (var i = 0; i < $scope.user.missionsVersus.length; i++) {
       battles[i] = {};
       for (var key in $scope.user.missionsVersus[i]) {
         battles[i][key] = $scope.user.missionsVersus[i][key];
@@ -102,11 +101,13 @@ angular.module('mobile.battle.controllers')
     };
 
     var getFriendData = function(id) {
-      User.get({id: id}, function(user){
+      User.get({
+        id: id
+      }, function(user) {
         if (user._id) {
           $scope.friends.push(user);
-          var friend = $scope.friends[$scope.friends.length-1];
-          for (var j=0; j<battles.length; j++) {
+          var friend = $scope.friends[$scope.friends.length - 1];
+          for (var j = 0; j < battles.length; j++) {
             var battle = battles[j];
             if (friend._id === battle.enemy) {
               friend.battleData = battle;
@@ -121,15 +122,15 @@ angular.module('mobile.battle.controllers')
       });
     };
 
-    for (var i=0; i<$scope.user.friends.length; i++) {
+    for (var i = 0; i < $scope.user.friends.length; i++) {
       var friend = $scope.user.friends[i];
       getFriendData(friend);
     }
 
-    for (var i=0; i<$scope.user.missionsVersus.length; i++) {
+    for (var i = 0; i < $scope.user.missionsVersus.length; i++) {
       var enemy = $scope.user.missionsVersus[i].enemy;
       var friendExists = false;
-      for (var j=0; j<$scope.user.friends.length; j++) {
+      for (var j = 0; j < $scope.user.friends.length; j++) {
         var friend = $scope.user.friends[j];
         if (enemy === friend) {
           friendExists = true;
@@ -160,9 +161,9 @@ angular.module('mobile.battle.controllers')
 
   $scope.cancelBattle = function(id) {
     // remove battle from $scope.user.battles
-    var removeMission = function(player,playerId) {
+    var removeMission = function(player, playerId) {
       var indexOfBattle;
-      for(var i = 0; i < player.missionsVersus.length; i++){
+      for (var i = 0; i < player.missionsVersus.length; i++) {
         if (player.missionsVersus[i].enemy === playerId) {
           indexOfBattle = i;
         }
@@ -172,14 +173,16 @@ angular.module('mobile.battle.controllers')
       User.update(player);
     };
 
-    removeMission($scope.user,id);
+    removeMission($scope.user, id);
 
     // get enemy data and remove missions versus
-    User.get({id : id}, function(user){
-      removeMission(user,$scope.user._id)
+    User.get({
+      id: id
+    }, function(user) {
+      removeMission(user, $scope.user._id)
     });
 
-    for (var i=0; i<$scope.friends.length; i++) {
+    for (var i = 0; i < $scope.friends.length; i++) {
       var friend = $scope.friends[i];
       if (friend._id === id) {
         delete friend.battleData;
@@ -217,7 +220,10 @@ angular.module('mobile.battle.controllers')
     var title, body;
 
     var findRandomBattle = function() {
-      RandomUser.get({id: $scope.user._id, level: $scope.user.attributes.level}, function(enemy) {
+      RandomUser.get({
+        id: $scope.user._id,
+        level: $scope.user.attributes.level
+      }, function(enemy) {
         if (Object.keys(enemy).length > 0) {
           $scope.startBattle(enemy._id);
         } else {
@@ -241,7 +247,7 @@ angular.module('mobile.battle.controllers')
       var battlePending = false;
       var battleRequest = false;
 
-      for (var i=0; i<$scope.user.missionsVersus.length; i++) {
+      for (var i = 0; i < $scope.user.missionsVersus.length; i++) {
         var mission = $scope.user.missionsVersus[i];
         if (mission.enemy === id && mission.status.toLowerCase() === 'pending') {
           battlePending = true;
@@ -254,7 +260,7 @@ angular.module('mobile.battle.controllers')
         // get the correct battle
         var battle;
         var indexOfBattle;
-        for(var i = 0; i < $scope.user.missionsVersus.length; i++){
+        for (var i = 0; i < $scope.user.missionsVersus.length; i++) {
           if ($scope.user.missionsVersus[i].enemy === id) {
             indexOfBattle = i;
             battle = $scope.user.missionsVersus[i];
@@ -262,9 +268,11 @@ angular.module('mobile.battle.controllers')
         }
 
         // get user attributes from database
-        User.get({id : id}, function(enemy){
+        User.get({
+          id: id
+        }, function(enemy) {
           var enemyBattle;
-          for(var i = 0; i < enemy.missionsVersus.length; i++){
+          for (var i = 0; i < enemy.missionsVersus.length; i++) {
             if (enemy.missionsVersus[i].enemy === $scope.user._id) {
               enemyBattle = enemy.missionsVersus[i];
             }
@@ -273,50 +281,50 @@ angular.module('mobile.battle.controllers')
           // use game logic to determine winner of battle
           // post battle results to database for both players
 
-          var winner = util.battle($scope.user,enemy);
+          var winner = util.battle($scope.user, enemy);
 
-          var updateExp = function(player1,player2,status) {
+          var updateExp = function(player1, player2, status) {
             var player1Xp = player1.attributes.experience + player1.fitbit.experience;
             var player2Xp = player2.attributes.experience + player2.fitbit.experience;
             var player1AttrXp = player1.attributes.experience;
             var player2AttrXp = player2.attributes.experience;
-            var diff = Math.abs(player2Xp-player1Xp);
+            var diff = Math.abs(player2Xp - player1Xp);
             if (status === 'win') {
               if (player2Xp >= player1Xp) {
-                return player1AttrXp + diff*0.2;
+                return player1AttrXp + diff * 0.2;
               } else {
-                return player1AttrXp + diff*(1/Math.log(diff)*0.5);
+                return player1AttrXp + diff * (1 / Math.log(diff) * 0.5);
               }
             } else if (status === 'loss') {
               if (player2Xp >= player1Xp) {
-                return player1AttrXp - diff*(1/Math.log(diff)*0.5);
+                return player1AttrXp - diff * (1 / Math.log(diff) * 0.5);
               } else {
-                return player1AttrXp - diff*0.2;
+                return player1AttrXp - diff * 0.2;
               }
             }
           };
 
           var saveBattleResult = function(winnerId, loserId) {
             var battle = {
-              winner : winnerId,
-              loser : loserId,
-              createdAt : new Date()
+              winner: winnerId,
+              loser: loserId,
+              createdAt: new Date()
             }
 
             Battle.save(battle);
           }
 
-          var adjustAttr = function(playerWin,playerLose) {
+          var adjustAttr = function(playerWin, playerLose) {
             playerLose.attributes.HP = 0;
             playerWin.attributes.HP = winner.hp;
             playerWin.attributes.gold += Math.floor(playerLose.attributes.gold * 0.1);
             playerLose.attributes.gold = Math.floor(playerLose.attributes.gold *= 0.9);
-            playerWin.attributes.experience = Math.floor(updateExp(playerWin,playerLose,'win'));
-            playerLose.attributes.experience = Math.floor(updateExp(playerLose,playerWin,'loss'));
-            saveBattleResult(playerWin._id,playerLose._id);
+            playerWin.attributes.experience = Math.floor(updateExp(playerWin, playerLose, 'win'));
+            playerLose.attributes.experience = Math.floor(updateExp(playerLose, playerWin, 'loss'));
+            saveBattleResult(playerWin._id, playerLose._id);
           };
 
-          var handleNegXp = function(player,level){
+          var handleNegXp = function(player, level) {
             var playerXp = player.fitbit.experience + player.attributes.experience;
             var levelXp = util.levelExp(level);
             if (playerXp < 0) {
@@ -327,25 +335,25 @@ angular.module('mobile.battle.controllers')
           };
 
           if (winner.result === 'player 1') {
-            adjustAttr($scope.user,enemy);
+            adjustAttr($scope.user, enemy);
             handleNegXp(enemy, enemy.attributes.level);
             enemyBattle.status = 'loss';
             battle.status = 'win';
             checkLevel($scope.user);
           } else if (winner.result === 'player 2') {
-            adjustAttr(enemy,$scope.user);
+            adjustAttr(enemy, $scope.user);
             handleNegXp($scope.user, $scope.user.attributes.level);
             enemyBattle.status = 'win';
             battle.status = 'loss';
           }
 
-          util.showAlert($ionicPopup,'Challenge Accepted','Your duel to the death with '+ enemy.profile.displayName+ ' is in progress. Who will come out on top?', 'Results', function() {
+          util.showAlert($ionicPopup, 'Challenge Accepted', 'Your duel to the death with ' + enemy.profile.displayName + ' is in progress. Who will come out on top?', 'Results', function() {
             battleResults(battle.status, enemy.username);
           });
 
-          $scope.user.missionsVersus.splice(indexOfBattle,1);
+          $scope.user.missionsVersus.splice(indexOfBattle, 1);
 
-          for (var i=0; i<$scope.friends.length; i++) {
+          for (var i = 0; i < $scope.friends.length; i++) {
             var friend = $scope.friends[i];
             if (friend._id === id) {
               delete friend.battleData;
@@ -363,9 +371,9 @@ angular.module('mobile.battle.controllers')
           $ionicListDelegate.closeOptionButtons();
         });
       } else {
-        var checkMissionExists = function(player,enemyId) {
+        var checkMissionExists = function(player, enemyId) {
           var missions = player.missionsVersus;
-          for (var i=0; i<missions.length; i++) {
+          for (var i = 0; i < missions.length; i++) {
             var mission = missions[i];
             if (mission.enemy === enemyId) {
               return true;
@@ -374,9 +382,15 @@ angular.module('mobile.battle.controllers')
           return false;
         };
 
-        var battleInfo = {type:'battle',enemy:id,status:'pending'};
-        User.get({id: $scope.user._id}, function(user) {
-          var missionExists = checkMissionExists(user,id);
+        var battleInfo = {
+          type: 'battle',
+          enemy: id,
+          status: 'pending'
+        };
+        User.get({
+          id: $scope.user._id
+        }, function(user) {
+          var missionExists = checkMissionExists(user, id);
           if (!missionExists) {
             user.missionsVersus.push(battleInfo);
             $scope.user.missionsVersus.push(battleInfo);
@@ -384,9 +398,15 @@ angular.module('mobile.battle.controllers')
           }
         });
 
-        User.get({id: id}, function(friend) {
-          var battle = {type:'battle',enemy:$scope.user._id,status:'request'};
-          var friendMissionExists = checkMissionExists(friend,$scope.user._id);
+        User.get({
+          id: id
+        }, function(friend) {
+          var battle = {
+            type: 'battle',
+            enemy: $scope.user._id,
+            status: 'request'
+          };
+          var friendMissionExists = checkMissionExists(friend, $scope.user._id);
           if (!friendMissionExists) {
             friend.missionsVersus.push(battle);
             friend.battleData = battleInfo;
@@ -395,7 +415,7 @@ angular.module('mobile.battle.controllers')
           }
         });
 
-        for (var i=0; i<$scope.friends.length; i++) {
+        for (var i = 0; i < $scope.friends.length; i++) {
           var friend = $scope.friends[i];
           if (friend._id === id) {
             friend.battleData = battleInfo;
@@ -419,21 +439,29 @@ angular.module('mobile.battle.controllers')
     $scope.isPending = false;
     tabSettings('history');
     var userId = $scope.user._id;
-    Battle.query({winner: userId}, function(battlesWon){
-     Battle.query({loser: userId}, function(battlesLost){
+    Battle.query({
+      winner: userId
+    }, function(battlesWon) {
+      Battle.query({
+        loser: userId
+      }, function(battlesLost) {
         $scope.wins = battlesWon.length;
         $scope.losses = battlesLost.length;
 
         var oldBattles = battlesWon.concat(battlesLost);
-        for (var i=0; i<battlesWon.length; i++) {
+        for (var i = 0; i < battlesWon.length; i++) {
           var enemy = battlesWon[i].loser;
-          User.get({id: enemy}, function(user) {
+          User.get({
+            id: enemy
+          }, function(user) {
             $scope.oldWinBattles.push(user);
           });
         }
-        for (var i=0; i<battlesLost.length; i++) {
+        for (var i = 0; i < battlesLost.length; i++) {
           var enemy = battlesLost[i].winner;
-          User.get({id: enemy}, function(user) {
+          User.get({
+            id: enemy
+          }, function(user) {
             $scope.oldLossBattles.push(user);
           });
         }
@@ -454,15 +482,15 @@ angular.module('mobile.battle.controllers')
     activeTab('boss');
     tabSettings('boss');
     $scope.soloMissions = [];
-    SoloMissions.query(function(solos){
+    SoloMissions.query(function(solos) {
       var allSoloMissions = solos;
       var soloMission;
       //Filter missions that are complete or greater than current user level
-      for (var i=0; i<allSoloMissions.length; i++) {
+      for (var i = 0; i < allSoloMissions.length; i++) {
         var battleComplete = false;
         soloMission = allSoloMissions[i];
-        if (soloMission.level <= $scope.user.attributes.level && ($scope.user.attributes.level-6) < (soloMission.level)) {
-          for (var j=0; j<$scope.user.battles.length; j++) {
+        if (soloMission.level <= $scope.user.attributes.level && ($scope.user.attributes.level - 6) < (soloMission.level)) {
+          for (var j = 0; j < $scope.user.battles.length; j++) {
             var completedBattle = $scope.user.battles[j];
             if (completedBattle === soloMission['_id']) {
               battleComplete = true;
@@ -485,9 +513,11 @@ angular.module('mobile.battle.controllers')
   // Show list of completed boss fights
   $scope.completeBossFights = function() {
     $scope.soloMissions = [];
-    for (var i=0; i<$scope.user.battles.length; i++) {
+    for (var i = 0; i < $scope.user.battles.length; i++) {
       var completedBattle = $scope.user.battles[i];
-      SoloMissions.get({id: completedBattle}, function(battle) {
+      SoloMissions.get({
+        id: completedBattle
+      }, function(battle) {
         $scope.soloMissions.push(battle);
       });
     }
@@ -495,24 +525,26 @@ angular.module('mobile.battle.controllers')
 
   // Stat mission with boss
   $scope.startMission = function(missionId) {
-    $scope.soloMission = SoloMissions.get({id: missionId});
+    $scope.soloMission = SoloMissions.get({
+      id: missionId
+    });
     var title, body;
 
     var startBossBattle = function() {
       var index;
-      var winner = util.bossBattle($scope.user,$scope.soloMission);
+      var winner = util.bossBattle($scope.user, $scope.soloMission);
       title = 'Mission Results';
 
       if (winner.result === 'player') {
         $scope.user.attributes.experience += $scope.soloMission.experience;
         $scope.user.attributes.gold += $scope.soloMission.gold;
         $scope.user.battles.push($scope.soloMission._id);
-        for (var i=0; i<$scope.soloMissions.length; i++) {
+        for (var i = 0; i < $scope.soloMissions.length; i++) {
           if ($scope.soloMissions[i]['_id'] === missionId) {
             index = i;
           }
         }
-        $scope.soloMissions.splice(index,1);
+        $scope.soloMissions.splice(index, 1);
 
         checkLevel($scope.user);
         body = 'You\'ve crushed evil. You gained ' + $scope.soloMission.experience + ' experience and ' + $scope.soloMission.gold + ' gold';
@@ -523,7 +555,7 @@ angular.module('mobile.battle.controllers')
 
       User.update($scope.user);
 
-      util.showAlert($ionicPopup, title, body, 'OK', function(){
+      util.showAlert($ionicPopup, title, body, 'OK', function() {
         $ionicListDelegate.closeOptionButtons();
       });
     };
@@ -532,7 +564,7 @@ angular.module('mobile.battle.controllers')
       title = 'Mission Started';
       body = 'You are waging war against the forces of evil...',
 
-      util.showAlert($ionicPopup, title, body, 'Continue', startBossBattle);
+        util.showAlert($ionicPopup, title, body, 'Continue', startBossBattle);
     } else {
       healthWarning();
     }

@@ -4,7 +4,7 @@ angular.module('mobile.quest.controllers')
 .controller('QuestCtrl', function($scope, $ionicLoading, $ionicScrollDelegate, localStorageService, SoloMissions, Quests, User, TimesData, DatesData) {
 
   // Creates the loading screen that only shows up after 500 ms if items have not yet loaded
-  var loading = setTimeout(function(){
+  var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
@@ -24,13 +24,13 @@ angular.module('mobile.quest.controllers')
 
     // Create an array of ids of quests the user is currently doing
     var currentQuests = [];
-    for (var i = 0; i < $scope.user.quests.length; i++ ) {
+    for (var i = 0; i < $scope.user.quests.length; i++) {
       currentQuests.push($scope.user.quests[i].questId);
     }
     // Compare all quests against this array and only display them if they're not on it
-    Quests.query(function(quests){
+    Quests.query(function(quests) {
       $scope.quests = quests;
-      for (var i =0; i<$scope.quests.length;i++) {
+      for (var i = 0; i < $scope.quests.length; i++) {
         if (currentQuests.indexOf($scope.quests[i]._id) < 0) {
           $scope.availableQuests.push($scope.quests[i]);
         }
@@ -43,7 +43,7 @@ angular.module('mobile.quest.controllers')
   // Show all of the quests that are active
   $scope.active = function() {
     $scope.isAll = false;
-    $scope.isActive =  true;
+    $scope.isActive = true;
     $scope.isComplete = false;
     $scope.allTab = '';
     $scope.activeTab = 'button-tab-active';
@@ -52,10 +52,12 @@ angular.module('mobile.quest.controllers')
 
     var today = new Date();
     $scope.quests = [];
-    for (var i =0; i< $scope.user.quests.length; i++) {
-      if($scope.user.quests[i].status === 'active') {
+    for (var i = 0; i < $scope.user.quests.length; i++) {
+      if ($scope.user.quests[i].status === 'active') {
         (function(i) {
-          Quests.get({id : $scope.user.quests[i].questId}, function(q) {
+          Quests.get({
+            id: $scope.user.quests[i].questId
+          }, function(q) {
             $scope.quests.push(q);
           });
         }(i));
@@ -79,16 +81,18 @@ angular.module('mobile.quest.controllers')
 
     // Iterate over all the quests that the user has stored; maybe eventually just save them
     // locally to the user object
-    for (var j =0; j< $scope.user.quests.length; j++) {
+    for (var j = 0; j < $scope.user.quests.length; j++) {
       (function(i) {
         var quest = $scope.user.quests[i];
         var completeDate = new Date(quest.completionTime); //convert date to matched format
         // Iterate over all the quests and get the ones that have status of completed
-        if(quest.status === 'success' || quest.status === 'fail') {
+        if (quest.status === 'success' || quest.status === 'fail') {
           // if 7 days have passed since this was completed, they can do it again so we remove it from their user array
-          if(completeDate.addDays(7) > today) {
+          if (completeDate.addDays(7) > today) {
             refreshQuests.push(quest);
-            Quests.get({id : quest.questId}, function(q) {
+            Quests.get({
+              id: quest.questId
+            }, function(q) {
               q.completionTime = quest.completionTime; //add completion time so we can sort them
               if (quest.status === 'success') {
                 $scope.successfulQuests.push(q);
@@ -109,6 +113,12 @@ angular.module('mobile.quest.controllers')
 
   $scope.all();
 
+  //chance add to refresh quest list start
+  $scope.refresh = function(){
+    $scope.all();
+  }
+  //chance add to refresh quest list end
+
   $scope.showList = {
     steps: true,
     distance: true,
@@ -118,7 +128,7 @@ angular.module('mobile.quest.controllers')
     fail: true
   }
 
-  $scope.toggleList = function (list) {
+  $scope.toggleList = function(list) {
     $scope.showList[list] = !$scope.showList[list];
   };
 

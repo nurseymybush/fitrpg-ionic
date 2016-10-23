@@ -1,3 +1,28 @@
+<h2>Fixes 10/21</h2>
+*[added $window to dep inj in select-username-controller.js]
+*[added $state to dep inj in shop-detail-controller.js]
+*[added moment and humanize-duration to bower.json fix error when click on quest]
+*[fixed bug where random button wasnt showing on battle page by adding it to correct html area]
+*[using $ionicHistory.goBack() instead of deprecated $navBarDelegate.back() in app.js]
+*[added can-swipe="true" to ion-list in battle.html and friends.html to enable swiping]
+
+*[fixed status bar hiding in app.js with: --didnt work
+if (window.StatusBar) {
+      StatusBar.hide(); //chance add
+      ionic.Platform.fullScreen(); //chance add
+}
+if (ionic.Platform.isAndroid()) {
+    window.addEventListener("native.hidekeyboard", function() {
+      StatusBar.hide();
+      window.AndroidFullScreen.immersiveMode(false, false);
+    });
+}]
+
+<h2>Nurseymybush forked updates</h2>
+*[Updates all Node and Bower components to latest]
+*[Updated from Fitbit Oauth1 to Oauth2]
+*[Using NgCordova for Cordova plugins]
+
 <img src="/readme/github_promo.png"/>
 <a href="https://play.google.com/store/apps/details?id=com.fatchickenstudios.fitrpg">
   <img alt="Get it on Google Play"

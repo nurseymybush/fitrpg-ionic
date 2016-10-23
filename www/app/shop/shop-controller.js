@@ -36,6 +36,11 @@ angular.module('mobile.shop.controllers')
   };
 
   $scope.getData();
+
+  $scope.refresh = function(){
+    $scope.getData();
+    $scope.$broadcast('scroll.refreshComplete');
+  };
   $scope.equipment();
 
   $scope.showList = {

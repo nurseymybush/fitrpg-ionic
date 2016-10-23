@@ -11,11 +11,46 @@ angular.module('mobile.friends.controllers')
     request: true,
   };
 
+  //chance add to refresh friends list start
+  $scope.refresh = function() {
+    console.log('refreshing friends list');
+    $scope.friends = [];
+    $scope.friendRequests = [];
+    for (var i = 0; i < $scope.user.friends.length; i++) {
+      var friend = $scope.user.friends[i];
+      User.get({
+        id: friend
+      }, function(user) {
+        if (user._id) {
+          $scope.friends.push(user);
+          $scope.hasFriends = true;
+        }
+        stopLoading();
+      });
+    }
+
+    if ($scope.user.friendRequests) {
+      for (var i = 0; i < $scope.user.friendRequests.length; i++) {
+        var friendRequest = $scope.user.friendRequests[i];
+        var getFriend = function(request) {
+          User.get({
+            id: friendRequest.id
+          }, function(friend) {
+            friend.requestStatus = request.status;
+            $scope.friendRequests.push(friend);
+          });
+        };
+        getFriend(friendRequest);
+      }
+    }
+  };
+  //chance add to refresh friends list end
+
   $scope.toggleList = function(list) {
     $scope.showList[list] = !$scope.showList[list];
   };
 
-  var loading = setTimeout(function(){
+  var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
@@ -30,9 +65,11 @@ angular.module('mobile.friends.controllers')
     stopLoading();
   }
 
-  for (var i=0; i<$scope.user.friends.length; i++) {
+  for (var i = 0; i < $scope.user.friends.length; i++) {
     var friend = $scope.user.friends[i];
-    User.get({id: friend}, function(user){
+    User.get({
+      id: friend
+    }, function(user) {
       if (user._id) {
         $scope.friends.push(user);
         $scope.hasFriends = true;
@@ -42,10 +79,12 @@ angular.module('mobile.friends.controllers')
   }
 
   if ($scope.user.friendRequests) {
-    for (var i=0; i<$scope.user.friendRequests.length; i++) {
+    for (var i = 0; i < $scope.user.friendRequests.length; i++) {
       var friendRequest = $scope.user.friendRequests[i];
       var getFriend = function(request) {
-        User.get({id: friendRequest.id}, function(friend) {
+        User.get({
+          id: friendRequest.id
+        }, function(friend) {
           friend.requestStatus = request.status;
           $scope.friendRequests.push(friend);
         });
@@ -56,24 +95,24 @@ angular.module('mobile.friends.controllers')
 
   var removeFriendRequest = function(user, friendId) {
     var index;
-    for (var i=0; i<user.friendRequests.length; i++) {
+    for (var i = 0; i < user.friendRequests.length; i++) {
       var friendRequest = user.friendRequests[i];
       if (friendRequest.id === friendId) {
         index = i;
       }
     }
-    user.friendRequests.splice(index,1);
+    user.friendRequests.splice(index, 1);
   };
 
   $scope.friendPrompt = function(index) {
     var friend = $scope.friendRequests[index];
     var title = 'Friend Request';
     var body = friend.username + ' wants to add you as their friend.';
-    util.showPrompt($ionicPopup,title,body,'Accept','Reject',
-      function(){
+    util.showPrompt($ionicPopup, title, body, 'Accept', 'Reject',
+      function() {
         $scope.acceptFriend(index);
       },
-      function(){
+      function() {
         $scope.rejectFriend(index);
       }
     );
@@ -85,9 +124,11 @@ angular.module('mobile.friends.controllers')
     $scope.friends.push(friend);
 
     removeFriendRequest($scope.user, friend._id);
-    $scope.friendRequests.splice(index,1);
+    $scope.friendRequests.splice(index, 1);
 
-    User.get({id: friend._id}, function(user) {
+    User.get({
+      id: friend._id
+    }, function(user) {
       removeFriendRequest(user, $scope.user._id);
       user.friends.push($scope.user._id);
       User.update(user);
@@ -99,9 +140,11 @@ angular.module('mobile.friends.controllers')
     var friend = $scope.friendRequests[index];
 
     removeFriendRequest($scope.user, friend._id);
-    $scope.friendRequests.splice(index,1);
+    $scope.friendRequests.splice(index, 1);
 
-    User.get({id: friend._id}, function(friend) {
+    User.get({
+      id: friend._id
+    }, function(friend) {
       removeFriendRequest(friend, $scope.user._id);
       User.update(friend);
     });
@@ -122,7 +165,7 @@ angular.module('mobile.friends.controllers')
     } else {
       var battleExists = false;
 
-      for (var i=0; i<$scope.user.missionsVersus.length; i++) {
+      for (var i = 0; i < $scope.user.missionsVersus.length; i++) {
         var mission = $scope.user.missionsVersus[i];
         if (mission.enemy === friendId) {
           battleExists = true;
@@ -131,14 +174,22 @@ angular.module('mobile.friends.controllers')
 
       if (!battleExists) {
         // update $scope.battle to reflect status of pending with friend
-        $scope.user.missionsVersus.push({type:'battle',enemy:friendId,status:'pending'});
+        $scope.user.missionsVersus.push({
+          type: 'battle',
+          enemy: friendId,
+          status: 'pending'
+        });
         // post to database to update friends battle status
         User.update($scope.user);
 
-        for (var i=0; i<$scope.friends.length; i++) {
+        for (var i = 0; i < $scope.friends.length; i++) {
           var friend = $scope.friends[i];
           if (friend['_id'] === friendId) {
-            friend.missionsVersus.push({type:'battle',enemy:$scope.user['_id'],status:'request'});
+            friend.missionsVersus.push({
+              type: 'battle',
+              enemy: $scope.user['_id'],
+              status: 'request'
+            });
             User.update(friend);
           }
         }

@@ -17,7 +17,9 @@ angular.module('mobile.authentication.controllers')
        showDelay: 100
     });
 
-    User.get({id : localStorageService.get('userId') }, function(user) {
+   //chance try something
+   User.get({id : localStorageService.get('userId').slice(0, localStorageService.get('userId').length - 4) }, function(user) {
+   // User.get({id : localStorageService.get('userId') }, function(user) {
       if (user.username === undefined) {
         $ionicLoading.hide();
         $state.transitionTo('username');

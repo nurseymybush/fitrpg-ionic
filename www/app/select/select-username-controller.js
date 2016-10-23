@@ -1,6 +1,6 @@
 angular.module('mobile.select.controllers')
 
-.controller('UsernameCtrl',function($rootScope, $scope, $state, User, localStorageService, $cacheFactory, CheckUsername) {
+.controller('UsernameCtrl',function($rootScope, $scope, $state, $window, User, localStorageService, $cacheFactory, CheckUsername) {
 
   var localUserId = localStorageService.get('userId');
 

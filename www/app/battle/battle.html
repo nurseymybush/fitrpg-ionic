@@ -3,10 +3,12 @@
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon-gray icon ion-navicon"></button>
   </ion-nav-buttons>
+  <!--<ion-nav-buttons side="right">
+    <button class="button button-icon icon-gray icon ion-shuffle" ng-show="showRandom" ng-click="random()"></button>
+  </ion-nav-buttons>-->
   <ion-nav-buttons side="right">
     <button class="button button-icon icon-gray icon ion-shuffle" ng-show="showRandom" ng-click="random()"></button>
-  </ion-nav-buttons>
-  <ion-nav-buttons side="right">
+    <!--chance add here test-->
     <button class="button button-icon icon-gray icon ion-stats-bars" ng-show="showHistory" ng-click="history()"></button>
   </ion-nav-buttons>
 
@@ -18,9 +20,7 @@
   </div>
 
   <ion-content class="has-header has-subheader">
-    <ion-refresher
-      pulling-text="Pull to refresh..."
-      on-refresh="refresh()" >
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="refresh()">
     </ion-refresher>
 
     <div ng-show="friendsTab">
@@ -32,7 +32,7 @@
           </label>
         </div>
 
-        <ion-list>
+        <ion-list can-swipe="true">
           <ion-item class="item-avatar" ng-repeat="friend in friends | filter:searchText | orderBy: 'battleData.status'" type="item-text-wrap" ng-click="startBattle(friend['_id'])">
             <img ng-src="{{friend.profile.avatar}}">
             <h2>{{friend.username}}</h2>
@@ -83,27 +83,26 @@
 
     <!-- BOSS FIGHTS -->
     <div ng-hide="friendsTab">
-<!--       <div class="list">
+      <!--       <div class="list">
         <a class="item item-icon-right item-padding" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" href="#/app/solomission/{{mission['_id']}}">
           <h2>{{mission.title}}</h2>
           <p>Level {{mission.level}}</p>
           <i class="icon icon-gray ion-ios7-arrow-right"></i>
         </a>
       </div> -->
-        <ion-list>
-          <ion-item class="item item-icon-right" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" ng-click="startMission(mission['_id'])">
-            <h2>{{mission.title}}</h2>
-            <p>Level {{mission.level}},
-            Difficulty:
-              <i class="ion-star" ng-show="difficulty($index,1)"></i>
-              <i class="ion-star" ng-show="difficulty($index,2)"></i>
-              <i class="ion-star" ng-show="difficulty($index,3)"></i>
-              <i class="ion-star" ng-show="difficulty($index,4)"></i>
-              <i class="ion-star" ng-show="difficulty($index,5)"></i>
-            </p>
-            <ion-option-button class="button-positive button-swipe" ng-click="startMission(mission['_id'])">Fight</ion-option-button>
-          </ion-item>
-        </ion-list>
+      <ion-list>
+        <ion-item class="item item-icon-right" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" ng-click="startMission(mission['_id'])">
+          <h2>{{mission.title}}</h2>
+          <p>Level {{mission.level}}, Difficulty:
+            <i class="ion-star" ng-show="difficulty($index,1)"></i>
+            <i class="ion-star" ng-show="difficulty($index,2)"></i>
+            <i class="ion-star" ng-show="difficulty($index,3)"></i>
+            <i class="ion-star" ng-show="difficulty($index,4)"></i>
+            <i class="ion-star" ng-show="difficulty($index,5)"></i>
+          </p>
+          <ion-option-button class="button-positive button-swipe" ng-click="startMission(mission['_id'])">Fight</ion-option-button>
+        </ion-item>
+      </ion-list>
     </div>
 
   </ion-content>
