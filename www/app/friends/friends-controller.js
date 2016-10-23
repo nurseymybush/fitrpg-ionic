@@ -43,6 +43,7 @@ angular.module('mobile.friends.controllers')
         getFriend(friendRequest);
       }
     }
+    $scope.$broadcast('scroll.refreshComplete');
   };
   //chance add to refresh friends list end
 
@@ -104,6 +105,17 @@ angular.module('mobile.friends.controllers')
     user.friendRequests.splice(index, 1);
   };
 
+  var removeFriend = function(user, friendId) {
+    var index;
+    for (var i = 0; i < user.friends.length; i++) {
+      var friend = user.friends[i];
+      if (friend.id === friendId) {
+        index = i;
+      }
+    }
+    user.friends.splice(index, 1);
+  };
+
   $scope.friendPrompt = function(index) {
     var friend = $scope.friendRequests[index];
     var title = 'Friend Request';
@@ -149,6 +161,40 @@ angular.module('mobile.friends.controllers')
       User.update(friend);
     });
     User.update($scope.user);
+  };
+
+  var removeMissions = function(user, friendId) {
+    var index;
+    for (var i = 0; i < user.missionsVersus.length; i++) {
+      var mission = user.missionsVersus[i];
+      if (mission.enemy === friendId) {
+        index = i;
+      }
+    }
+    user.missionsVersus.splice(index, 1);
+  };
+
+  $scope.unfriend = function(friendId) {
+    console.log("in unfriend");
+    removeFriend($scope.user, friendId);//remove friend from friend list
+    removeMissions($scope.user, friendId);
+    
+    User.get({
+      id: friendId
+    }, function(friend) {
+      removeFriend(friend, $scope.user._id);  //remove friend from your friendList and you from your friend's friendList
+      removeMissions(friend, $scope.user._id);
+      User.update(friend);//updated friends user object on server
+    });
+    
+    User.update($scope.user);//update your user object on server
+
+    var title = 'Unfriend';
+    var body = 'Successfully removed friend';
+    util.showAlert($ionicPopup, title, body, 'OK', function() {
+      $ionicListDelegate.closeOptionButtons();
+    });
+    $scope.refresh();
   };
 
   $scope.hasFriends = false;

@@ -11,15 +11,7 @@
       pulling-text="Pull to refresh..."
       on-refresh="refresh()" >
     </ion-refresher>
-  <!--SEARCH BAR-->
-<!--
-    <div class="list list-inset">
-      <label class="item item-input">
-        <i class="icon ion-search placeholder-icon"></i>
-        <input type="text" placeholder="Search" ng-model="searchText">
-      </label>
-    </div>
- -->
+
     <ion-list can-swipe="true">
 
       <div class="item item-divider" ng-click="toggleList('friend')">
@@ -32,6 +24,7 @@
         <p>Level {{friend.attributes.level}} {{friend.character}}</p>
         <!-- add ngclick event to add battle to user database with status waiting -->
         <ion-option-button class="button-positive button-swipe" ng-click="requestBattle(friend['_id'])">Battle</ion-option-button>
+        <ion-option-button class="button-assertive button-swipe" ng-click="unfriend(friend['_id'])">Unfriend</ion-option-button>
       </ion-item>
       <span class="item item-padding" ng-hide="hasFriends" ng-click="navTo('addfriends')">Add Friends</span>
 
@@ -56,8 +49,6 @@
         <h2>{{friend.username}}</h2>
         <p>Level {{friend.attributes.level}} {{friend.character}}</p>
       </ion-item>
-
-
 
     </ion-list>
   </ion-content>
