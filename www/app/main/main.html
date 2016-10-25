@@ -45,7 +45,7 @@
               XP
               <span class="pull-right medium-text">{{calculatedData.currentXp}} / {{calculatedData.requiredXp}}</span>
             </p>
-            <progressbar max="100" value="(calculatedData.currentXp*100)/calculatedData.requiredXp"></progressbar>
+            <uib-progressbar max="100" value="(calculatedData.currentXp*100)/calculatedData.requiredXp"></uib-progressbar>
           </div>
         </div>
 
@@ -55,7 +55,7 @@
               HP
               <span class="pull-right medium-text">{{user.attributes.HP}} / {{calculatedData.maxHp}}</span>
             </p>
-            <progressbar max="100" value="(user.attributes.HP*100)/calculatedData.maxHp"></progressbar>
+            <uib-progressbar max="100" value="(user.attributes.HP*100)/calculatedData.maxHp"></uib-progressbar>
           </div>
         </div>
 

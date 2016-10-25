@@ -118,7 +118,6 @@ angular.module('mobile.battle.controllers')
           $scope.hasBattles = true;
         }
         stopLoading();
-        $scope.$broadcast('scroll.refreshComplete');
       });
     };
 
@@ -147,6 +146,7 @@ angular.module('mobile.battle.controllers')
     battles = [];
     $scope.friends = [];
     listOfBattles();
+    $scope.$broadcast('scroll.refreshComplete');
   };
 
   $scope.friendsBattle = function() {
