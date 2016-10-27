@@ -1,6 +1,6 @@
 angular.module('mobile.friends.controllers')
 
-.controller('AddFriendsCtrl', function($scope, User, $ionicPopup,  $ionicLoading, UserSearch) {
+.controller('AddFriendsCtrl', function($scope, User, $ionicPopup,  $ionicLoading, UserSearch, $state) {
   // friends is accessed from $rootScope.user.friends in the template
   $scope.friends = [];
 
@@ -97,6 +97,8 @@ angular.module('mobile.friends.controllers')
         body = 'Your request to be friends has already been sent.'
       }
     }
-    util.showAlert($ionicPopup,title,body,'OK',function(){});
+    util.showAlert($ionicPopup,title,body,'OK',function(){
+      $state.go('app.friends');
+    });
   }
 });

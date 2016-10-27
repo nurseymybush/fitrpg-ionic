@@ -48,6 +48,7 @@
         <img ng-src="{{friend.profile.avatar}}">
         <h2>{{friend.username}}</h2>
         <p>Level {{friend.attributes.level}} {{friend.character}}</p>
+        <ion-option-button class="button-assertive button-swipe" ng-click="rejectFriend($index)">Cancel Request</ion-option-button>
       </ion-item>
 
     </ion-list>

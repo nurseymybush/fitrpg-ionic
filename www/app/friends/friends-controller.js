@@ -94,6 +94,7 @@ angular.module('mobile.friends.controllers')
     }
   }
 
+  //TODO - refactor this and removeFriend into 1 function
   var removeFriendRequest = function(user, friendId) {
     var index;
     for (var i = 0; i < user.friendRequests.length; i++) {

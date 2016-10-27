@@ -11,7 +11,10 @@
   </div>
 
   <ion-content class="has-header has-subheader">
-
+    <ion-refresher
+      pulling-text="Pull to refresh..."
+      on-refresh="refresh()" >
+    </ion-refresher>
     <div class="list" ng-show="isEquipment">
       <div class="item item-divider" ng-click="toggleList('weapons')">
         Weapons<i class="icon ion-chevron-down pull-right" ng-show="showList['weapons']"></i><i class="icon ion-chevron-right pull-right" ng-hide="showList['weapons']"></i>
@@ -64,6 +67,7 @@
         <a class="item item-icon-right item-padding" ng-repeat="item in inventory | filter: { type: 'potion' }" href="#/app/inventory/{{item.inventoryId}}">
           <i class="icon {{item.icon}}"></i>
           <h2>{{item.name}}</h2>
+          <p>Quantity: {{item.quantity}}</p>
           <i class="icon icon-gray ion-ios7-arrow-right"></i>
         </a>
         <span class="item item-padding" ng-hide="hasItem['potion']">No Potions Available</span>

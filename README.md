@@ -2,6 +2,12 @@
 
 Fork of https://github.com/fitrpg/fitrpg-ionic
 <br>I hope to provide enhancedments and fixes to the project, fixes being first
+<h2>10/27</h2>
+* fixed bug where if you already own a piece of equipment(not potions), it should tell you and not let you buy it
+* fixed bug where inventory doesnt update when you sell weapons
+* added feature to swipe to cancel friend request
+* added feature to make same type potions appear in one row with a quantity number next to them
+
 <h2>10/22</h2>
 
 * changed "Store" to shop in shop.html title

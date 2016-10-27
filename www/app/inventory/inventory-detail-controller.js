@@ -3,9 +3,9 @@ angular.module('mobile.inventory.controllers')
 .controller('InventoryDetailCtrl', function($scope, $state, $stateParams, Shop, User, $ionicPopup, $q) {
   var item;
   var index;
-  var inventory = $scope.user.inventory;
+  var inventory = $scope.user.inventory;//might need to use rootscope, got an error
 
-  for (var i=0; i<inventory.length; i++) {
+  for (var i = 0; i < inventory.length; i++) {
     if (inventory[i].id.toString() === $stateParams.inventoryId.toString()) {
       index = i;
       item = inventory[index];
@@ -13,9 +13,11 @@ angular.module('mobile.inventory.controllers')
   }
   $scope.isWeapon = false;
 
-  $scope.inventoryItem = Shop.get({id : item.storeId}, function(){
-    $scope.inventoryItem.type = util.capitalize($scope.inventoryItem.type);
-    $scope.inventoryItem.quantity = item.quantity;
+  $scope.inventoryItem = Shop.get({
+    id: item.storeId
+  }, function(item) {
+    $scope.inventoryItem.type = item.type;
+    //$scope.inventoryItem.quantity = item.quantity;//shop doesnt have this info
     if ($scope.inventoryItem.size === 1) {
       $scope.inventoryItem.sizeText = 'One-Handed';
     } else if ($scope.inventoryItem.size === 2) {
@@ -25,6 +27,13 @@ angular.module('mobile.inventory.controllers')
       $scope.isWeapon = true;
     }
   });
+
+  var myVitality = $scope.user.attributes.vitality + $scope.user.fitbit.vitality;
+  var myMaxHp = util.vitalityToHp(myVitality, $scope.user.characterClass);
+  if($scope.user.attributes.hp + $scope.inventoryItem.hp >= myMaxHp)
+    $scope.potionHp = myMaxHp;
+  else 
+    $scope.potionHp = $scope.user.attributes.hp + $scope.inventoryItem.hp;
 
   $scope.addClass = function(attr) {
     if (attr > 0) {
@@ -39,7 +48,7 @@ angular.module('mobile.inventory.controllers')
     var title, body, callback;
     if (item.equipped === false) {
       $scope.user.attributes.gold = $scope.user.attributes.gold + $scope.inventoryItem.sellPrice;
-      if ($scope.inventoryItem.type.toLowerCase() !== 'potion') {
+      if ($scope.inventoryItem.type !== 'potion') {
         // remove from inventory
         $scope.user.inventory.splice(index, 1);
       } else {
@@ -54,12 +63,12 @@ angular.module('mobile.inventory.controllers')
       title = 'Item Sold';
       body = 'You received ' + $scope.inventoryItem.sellPrice + ' gold for your item.';
       callback = function() {
-        $state.go('app.character');
+        $state.go('app.inventory');
       }
     } else {
       title = 'Item Equipped';
       body = 'You must unequip your item before you can sell it.';
-      callback = function(){};
+      callback = function() {};
     }
 
     util.showAlert($ionicPopup, title, body, 'OK', callback);
@@ -84,49 +93,49 @@ angular.module('mobile.inventory.controllers')
       if ($scope.inventoryItem.type.toLowerCase() === 'weapon') {
         if ($scope.inventoryItem.size === 1) {
           if ($scope.user.equipped.weapon1.name === '') {
-            itemSet = setEquippedItem('weapon1',item,$scope.inventoryItem.name)
+            itemSet = setEquippedItem('weapon1', item, $scope.inventoryItem.name)
           } else if ($scope.user.equipped.weapon2.name === '') {
-            itemSet = setEquippedItem('weapon2',item,$scope.inventoryItem.name)
+            itemSet = setEquippedItem('weapon2', item, $scope.inventoryItem.name)
           }
         } else if ($scope.inventoryItem.size === 2) {
           if ($scope.user.equipped.weapon1.name === '' && $scope.user.equipped.weapon2.name === '') {
-            itemSet = setEquippedItem('weapon1',item,$scope.inventoryItem.name)
-            itemSet = setEquippedItem('weapon2',item,$scope.inventoryItem.name)
+            itemSet = setEquippedItem('weapon1', item, $scope.inventoryItem.name)
+            itemSet = setEquippedItem('weapon2', item, $scope.inventoryItem.name)
           }
         }
       } else if ($scope.inventoryItem.type.toLowerCase() === 'armor') {
         if ($scope.user.equipped.armor.name === '') {
-          itemSet = setEquippedItem('armor',item,$scope.inventoryItem.name)
+          itemSet = setEquippedItem('armor', item, $scope.inventoryItem.name)
         }
       } else if ($scope.inventoryItem.type.toLowerCase() === 'accessory') {
         if ($scope.user.equipped.accessory1.name === '') {
-          itemSet = setEquippedItem('accessory1',item,$scope.inventoryItem.name)
+          itemSet = setEquippedItem('accessory1', item, $scope.inventoryItem.name)
         } else if ($scope.user.equipped.accessory2.name === '') {
-          itemSet = setEquippedItem('accessory2',item,$scope.inventoryItem.name)
+          itemSet = setEquippedItem('accessory2', item, $scope.inventoryItem.name)
         }
       }
       if (itemSet) {
         item.equipped = true;
         addItemAttributes();
         User.update($scope.user);
-        util.showAlert($ionicPopup, 'Item Equipped','You are ready to wage war against the forces of evil.', 'OK', function() {
-          $state.go('app.character');
+        util.showAlert($ionicPopup, 'Item Equipped', 'You are ready to wage war against the forces of evil.', 'OK', function() {
+          $state.go('app.inventory');
         })
       } else {
-        util.showAlert($ionicPopup, 'Remove An Item','You are holding too many items. You need to take off an item before you can put this on.', 'OK', function() {
-          $state.go('app.character');
+        util.showAlert($ionicPopup, 'Remove An Item', 'You are holding too many items. You need to take off an item before you can put this on.', 'OK', function() {
+          $state.go('app.inventory');
         })
       }
     } else {
-      util.showAlert($ionicPopup, 'Item Already Equipped','You are already using this item. Select a different item to equip.', 'OK', function() {
-        $state.go('app.character');
+      util.showAlert($ionicPopup, 'Item Already Equipped', 'You are already using this item. Select a different item to equip.', 'OK', function() {
+        $state.go('app.inventory');
       })
     }
   };
 
   $scope.useItem = function() {
     var totalVitality = $scope.user.attributes.vitality + $scope.user.fitbit.vitality;
-    var maxHp = util.vitalityToHp(totalVitality,$scope.user.characterClass);
+    var maxHp = util.vitalityToHp(totalVitality, $scope.user.characterClass);
     if (item.quantity > 0) {
       $scope.user.attributes.HP += $scope.inventoryItem.hp;
       if ($scope.user.attributes.HP > maxHp) {
@@ -141,18 +150,16 @@ angular.module('mobile.inventory.controllers')
     }
 
     User.update($scope.user);
-    util.showAlert($ionicPopup, 'HP Recovered','Your HP is recovering!', 'OK', function() {
-      $state.go('app.character');
+    util.showAlert($ionicPopup, 'HP Recovered', 'Your HP is recovering!', 'OK', function() {
+      $state.go('app.inventory');
     })
   };
 
   $scope.checkType = function() {
-    if ($scope.inventoryItem) {
-      if ($scope.inventoryItem.type.toLowerCase() === 'potion') {
-        return true;
-      } else {
-        return false;
-      }
+    if ($scope.inventoryItem.type === 'potion') {
+      return true;
+    } else {
+      return false;
     }
   };
 });

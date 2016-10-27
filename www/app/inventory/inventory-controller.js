@@ -11,32 +11,35 @@ angular.module('mobile.inventory.controllers')
     }
     return objectCopy;
   };
-
-  $scope.inventory = [];
-  var loading = setTimeout(function(){
+  
+  var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
   }, 500);
 
-  Shop.query( function (storeItems) {
-    for (var i=0; i<inventory.length; i++) {
-      var itemId = inventory[i].storeId;
-      for (var j=0; j<storeItems.length; j++) {
-        var storeItem = makeCopy(storeItems[j]);
-        if (storeItem['_id'] === itemId){
-          storeItem['inventoryId'] = inventory[i].id;
-          if (inventory[i].equipped) {
-            storeItem['equipped'] = 'Equipped';
+  $scope.getInventory = function() {
+    $scope.inventory = [];
+    Shop.query(function(storeItems) {
+      for (var i = 0; i < inventory.length; i++) {
+        var itemId = inventory[i].storeId;
+        for (var j = 0; j < storeItems.length; j++) {
+          var storeItem = makeCopy(storeItems[j]);
+          if (storeItem['_id'] === itemId) {
+            storeItem['inventoryId'] = inventory[i].id;
+            storeItem['quantity'] = inventory[i].quantity;
+            if (inventory[i].equipped) {
+              storeItem['equipped'] = 'Equipped';
+            }
+            $scope.inventory.push(storeItem);
           }
-          $scope.inventory.push(storeItem);
         }
       }
-    }
-    clearTimeout(loading);
-    $ionicLoading.hide();
-    checkItems();
-  });
+      clearTimeout(loading);
+      $ionicLoading.hide();
+      checkItems();
+    });
+  };
 
   $scope.equipmentTab = 'button-tab-active';
   $scope.equipment = function() {
@@ -70,10 +73,17 @@ angular.module('mobile.inventory.controllers')
     accessory: false,
     potion: false
   };
+  
+  $scope.getInventory();
+
+  $scope.refresh = function() {
+    $scope.getInventory();
+    $scope.$broadcast('scroll.refreshComplete');
+  };
 
   var checkItems = function() {
     var quantity = {}
-    for (var i=0; i<$scope.inventory.length; i++) {
+    for (var i = 0; i < $scope.inventory.length; i++) {
       var item = $scope.inventory[i].type;
       quantity[item] = quantity[item] || 0;
       quantity[item]++;
