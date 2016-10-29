@@ -2,11 +2,23 @@ angular.module('mobile.shop.controllers')
 
 .controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q) {
   $scope.isWeapon = false;
+  $scope.currentQuantity = 1;
+  $scope.currentCost;
+
+  $scope.changePotionQuantity = function(posOrMinus) {
+    var nextQuantity = $scope.currentQuantity + posOrMinus;//this could be -1 or +1
+     if($scope.user.attributes.gold >= ($scope.shopItem.cost * nextQuantity) && nextQuantity >= 1) {
+       $scope.currentQuantity = nextQuantity;
+       $scope.currentCost = $scope.shopItem.cost * nextQuantity;
+     }
+  };
+  
   $scope.shopItem = Shop.get({
     id: $stateParams.shopId
   }, function(item) {
     //$scope.shopItem.type = util.capitalize($scope.shopItem.type);
     //$scope.shopItem.type = $scope.shopItem.type;
+    $scope.currentCost = item.cost;
     $scope.shopItem.type = item.type;//chance try
     if ($scope.shopItem.size === 1) {
       $scope.shopItem.sizeText = 'One-Handed';
@@ -48,8 +60,9 @@ angular.module('mobile.shop.controllers')
         $state.go('app.shop');
       });
     } else {
-      if ($scope.user.attributes.gold >= $scope.shopItem.cost) { //has enough gold to buy item
-        $scope.user.attributes.gold = $scope.user.attributes.gold - $scope.shopItem.cost;
+      //if ($scope.user.attributes.gold >= $scope.shopItem.cost) { //has enough gold to buy item
+        if ($scope.user.attributes.gold >= $scope.currentCost) {
+        $scope.user.attributes.gold = $scope.user.attributes.gold - $scope.currentCost;
         // add to inventory
         var found = false;
         var added = false;
@@ -66,7 +79,7 @@ angular.module('mobile.shop.controllers')
             if (item.storeId === $scope.shopItem['_id']) {
               found = true;
               added = true;
-              item.quantity++;//increase item quantity
+              item.quantity = item.quantity + $scope.currentQuantity;//increase item quantity
             }
           }
         }

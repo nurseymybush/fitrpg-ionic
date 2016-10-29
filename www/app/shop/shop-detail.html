@@ -43,12 +43,24 @@
       <div class="item item-body" ng-show="checkType()">
         <p>{{ shopItem.description }}</p>
         <br>
-        <p class="pull-left">Cost</p>
-        <p class="pull-right">{{ shopItem.cost }} Gold</p>
+        <p class="pull-left">
+          Cost
+          <br>Quantity
+        </p>
+        <p class="pull-right">
+          {{ currentCost }} Gold
+          <br> {{currentQuantity }}
+        </p>
       </div>
 
 
       <div class="item tabs tabs-secondary tabs-icon-left">
+        <a class="tab-item" ng-click="changePotionQuantity(-1)" ng-show="checkType()">
+            <i class="icon ion-minus-circled"></i>
+          </a>
+        <a class="tab-item" ng-click="changePotionQuantity(1)" ng-show="checkType()">
+            <i class="icon ion-plus-circled"></i>
+          </a>
         <a class="tab-item" ng-click="buyItem()">
           <i class="icon ion-pricetag"></i>
           Buy
@@ -57,4 +69,7 @@
     </div>
     </div>
   </ion-content>
+  <ion-footer-bar align-title="center">
+    <h1 class="title">Gold: {{ user.attributes.gold }}</h1>
+  </ion-footer-bar>
 </ion-view>

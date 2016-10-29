@@ -2,6 +2,12 @@
 
 Fork of https://github.com/fitrpg/fitrpg-ionic
 <br>I hope to provide enhancedments and fixes to the project, fixes being first
+<h2>10/29</h2>
+* show current gold in footer of shop screen
+* When clicking on hp bar in char screen and you dont have full hp and you have potions, take to the app.inventory.potions area to use potions
+* use connect-redis for session instead of express-session
+* able to buy multiple potions
+
 <h2>10/27</h2>
 * fixed bug where if you already own a piece of equipment(not potions), it should tell you and not let you buy it
 * fixed bug where inventory doesnt update when you sell weapons

@@ -112,6 +112,12 @@ angular.module('mobile.main.controllers')
       $scope.questAlerts.splice(index, 1);
     };
 
+    $scope.goToPotions = function(current, max){
+      if(current < max){
+        $state.go('app.inventory');
+      }
+    };
+
     var calculateData = function (user) {
       console.log('in calculateData');
       if (user.attributes != undefined) {
