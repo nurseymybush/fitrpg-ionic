@@ -213,7 +213,8 @@
 }
 
 .item-padding {
-  padding: 10px 25px;
+  padding: 10px 50px;
+  /* top and bottom are 10px, left and right are 25px*/
 }
 
 /* END LIST SCREEN */

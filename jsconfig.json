@@ -12,6 +12,8 @@
 		"jspm_packages",
 		"tmp",
 		"temp",
-		"platforms"
+		"platforms",
+		"plugins",
+		"resources"
 	]
 }

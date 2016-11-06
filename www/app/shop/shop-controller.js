@@ -7,6 +7,22 @@ angular.module('mobile.shop.controllers')
     });
   }, 500);
 
+  $scope.rarityColor = function(isRare){
+    if(isRare) return "energized";
+  };
+
+  $scope.isNotOwned = function(item){
+    //TODO - this logic is now in tow places, shop-detail and shop
+    var notOwned = true;
+    var inventory = $scope.user.inventory;
+    for (var i = 0; i < inventory.length; ++i) {
+      if (item._id === inventory[i].storeId) {
+        notOwned = false;
+      }
+    }
+    return notOwned;
+  };
+
   $scope.getData = function() {
     $scope.shop = [];
     Shop.query( function (items) {

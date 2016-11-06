@@ -22,9 +22,9 @@
 
       <div ng-show="showList['weapons']">
         <a class="item item-icon-right item-padding" ng-repeat="item in inventory | filter: { type: 'weapon' } | orderBy: '-level' track by $index" href="#/app/inventory/{{item.inventoryId}}">
-          <h2>{{item.name}}</h2>
+          <h2 ng-class="rarityColor(item.rare)">Lvl{{item.level}} {{item.name}} {{item.size}}H</h2>
           <p>{{item.equipped}}</p>
-          <i class="icon icon-gray ion-ios7-arrow-right"></i>
+          <i class="icon icon-gray ion-ios-arrow-right"></i>
         </a>
         <span class="item item-padding" ng-hide="hasItem['weapon']">No Weapons Available</span>
       </div>
@@ -35,9 +35,9 @@
 
       <div ng-show="showList['armor']">
         <a class="item item-icon-right item-padding" ng-repeat="item in inventory | filter: { type: 'armor' } | orderBy: '-level' track by $index" href="#/app/inventory/{{item.inventoryId}}">
-          <h2>{{item.name}}</h2>
+          <h2 ng-class="rarityColor(item.rare)">Lvl{{item.level}} {{item.name}}</h2>
           <p>{{item.equipped}}</p>
-          <i class="icon icon-gray ion-ios7-arrow-right"></i>
+          <i class="icon icon-gray ion-ios-arrow-right"></i>
         </a>
         <span class="item item-padding" ng-hide="hasItem['armor']">No Armor Available</span>
       </div>
@@ -49,9 +49,9 @@
       <div ng-show="showList['accessories']">
         <a class="item item-icon-right item-padding" ng-repeat="item in inventory | filter: { type: 'accessory' } | orderBy: '-level' track by $index" href="#/app/inventory/{{item.inventoryId}}">
           <i class="icon {{item.icon}}"></i>
-          <h2>{{item.name}}</h2>
+          <h2 ng-class="rarityColor(item.rare)">Lvl{{item.level}} {{item.name}}</h2>
           <p>{{item.equipped}}</p>
-          <i class="icon icon-gray ion-ios7-arrow-right"></i>
+          <i class="icon icon-gray ion-ios-arrow-right"></i>
         </a>
         <span class="item item-padding" ng-hide="hasItem['accessory']">No Accessories Available</span>
       </div>
@@ -68,7 +68,7 @@
           <i class="icon {{item.icon}}"></i>
           <h2>{{item.name}}</h2>
           <p>Quantity: {{item.quantity}}</p>
-          <i class="icon icon-gray ion-ios7-arrow-right"></i>
+          <i class="icon icon-gray ion-ios-arrow-right"></i>
         </a>
         <span class="item item-padding" ng-hide="hasItem['potion']">No Potions Available</span>
       </div>

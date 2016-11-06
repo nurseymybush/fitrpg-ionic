@@ -21,7 +21,11 @@
     "com.ionic.keyboard",
     "cordova-plugin-whitelist",
     "cordova-plugin-inappbrowser",
-    "cordova-plugin-statusbar"
+    "cordova-plugin-statusbar",
+    {
+      "locator": "https://github.com/EddyVerbruggen/Toast-PhoneGap-Plugin.git",
+      "id": "cordova-plugin-x-toast"
+    }
   ],
   "cordovaPlatforms": [
     "android"

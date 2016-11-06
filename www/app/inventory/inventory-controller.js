@@ -12,6 +12,10 @@ angular.module('mobile.inventory.controllers')
     return objectCopy;
   };
   
+  $scope.rarityColor = function(isRare){
+    if(isRare) return "energized";
+  }
+
   var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'

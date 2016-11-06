@@ -1,6 +1,6 @@
 angular.module('mobile.shop.controllers')
 
-.controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q) {
+.controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q, $cordovaToast) {
   $scope.isWeapon = false;
   $scope.currentQuantity = 1;
   $scope.currentCost;
@@ -56,9 +56,11 @@ angular.module('mobile.shop.controllers')
     var isPotion = $scope.checkType();
 
     if (equipInInventory === true && isPotion === false) { //is not a potion and is already in inventory
-      util.showAlert($ionicPopup, 'Item in Inventory', 'Item is already inventory.', 'OK', function() {
+      //util.showAlert($ionicPopup, 'Item Owned', 'You already own this item.', 'OK', function() {
+      $cordovaToast.showShortBottom('You already own this item.').then(function(success) {
         $state.go('app.shop');
       });
+        
     } else {
       //if ($scope.user.attributes.gold >= $scope.shopItem.cost) { //has enough gold to buy item
         if ($scope.user.attributes.gold >= $scope.currentCost) {
