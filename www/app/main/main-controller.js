@@ -195,7 +195,7 @@ angular.module('mobile.main.controllers')
 
     //check if user.seenItems contains each shopItem - if not then add new item Alert
     for(var i = 0; i < shopItems.length; ++i){
-      if(!$scope.user.seenItems.contains(shopItems[i])){
+      if(!$scope.user.seenItems.includes(shopItems[i])){
         addNewItemAlert();
         return;
       }
