@@ -76,6 +76,17 @@ angular.module('mobile.main.controllers')
     });
   };
 
+  var addNewItemAlert = function() {
+    var type, msg;
+    type = 'success';
+    msg = 'There are new item(s) in the Shop.';
+    $scope.alertCount++;
+    $scope.newItemAlerts.push({
+      type: type,
+      msg: msg
+    });
+  };
+
   var addQuestAlert = function(quest) {
     var type, msg;
     if (quest.status === 'success') {
@@ -162,12 +173,34 @@ angular.module('mobile.main.controllers')
     alertLevelUpStatus();
     alertFriendRequestStatus();
     alertQuestStatus();
+    alertNewShopItem();
   };
 
   //chance add 11/5 - still working
-  var alertNewShopItem = function(){
-    $scope.newShopItemsAlerts = [];
+  var alertNewShopItem = function() {
+    $scope.newItemAlerts = [];
+    var userInventory = $scope.user.inventory; //alias var for inventory
+    $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : [];//if seenItems doesnt exist, create it
+   
+    var userTempSeenItems = [];
+    userTempSeenItems = $scope.user.seenItems.concat(userInventory);//add all items from inventory to seen Items with dupes
+    //set $scope.user.seenItems to deduped userTempSeenItems
+    $scope.user.seenItems = _.uniq(userTempSeenItems);
 
+    //get all items from shop
+    var shopItems = [];
+    Shop.query( function (items) {
+      shopItems = items;
+    });
+
+    //check if user.seenItems contains each shopItem - if not then add new item Alert
+    for(var i = 0; i < shopItems.length; ++i){
+      if(!$scope.user.seenItems.contains(shopItems[i])){
+        addNewItemAlert();
+        return;
+      }
+    }
+    User.update($scope.user);
   };
 
   var alertBattleStatus = function() {

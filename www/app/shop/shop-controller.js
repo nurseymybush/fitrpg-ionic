@@ -23,6 +23,7 @@ angular.module('mobile.shop.controllers')
     return notOwned;
   };
 
+  //TODO - using this in main-controller now too, maybe a refactor would be appropriate
   $scope.getData = function() {
     $scope.shop = [];
     Shop.query( function (items) {
