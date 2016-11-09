@@ -5,21 +5,31 @@ angular.module('mobile.shop.controllers')
   $scope.currentQuantity = 1;
   $scope.currentCost;
 
+  //if user.seenItems doesnt exist, create it
+  $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : [];
+  //push item into user.seenItems if not already present
+  //if(!$scope.user.seenItems.includes($stateParams.shopId)) $scope.user.seenItems.push($stateParams.shopId);
+  if (_.contains($scope.user.seenItems.includes, $stateParams.shopId) === false) {
+    $scope.user.seenItems.push($stateParams.shopId);
+    User.update($scope.user);
+  }
+
   $scope.changePotionQuantity = function(posOrMinus) {
-    var nextQuantity = $scope.currentQuantity + posOrMinus;//this could be -1 or +1
-     if($scope.user.attributes.gold >= ($scope.shopItem.cost * nextQuantity) && nextQuantity >= 1) {
-       $scope.currentQuantity = nextQuantity;
-       $scope.currentCost = $scope.shopItem.cost * nextQuantity;
-     }
+    var nextQuantity = $scope.currentQuantity + posOrMinus; //this could be -1 or +1
+    if ($scope.user.attributes.gold >= ($scope.shopItem.cost * nextQuantity) && nextQuantity >= 1) {
+      $scope.currentQuantity = nextQuantity;
+      $scope.currentCost = $scope.shopItem.cost * nextQuantity;
+    }
   };
-  
+
+
   $scope.shopItem = Shop.get({
     id: $stateParams.shopId
   }, function(item) {
     //$scope.shopItem.type = util.capitalize($scope.shopItem.type);
     //$scope.shopItem.type = $scope.shopItem.type;
     $scope.currentCost = item.cost;
-    $scope.shopItem.type = item.type;//chance try
+    $scope.shopItem.type = item.type; //chance try
     if ($scope.shopItem.size === 1) {
       $scope.shopItem.sizeText = 'One-Handed';
     } else if ($scope.shopItem.size === 2) {
@@ -60,10 +70,10 @@ angular.module('mobile.shop.controllers')
       $cordovaToast.showShortBottom('You already own this item.').then(function(success) {
         $state.go('app.shop');
       });
-        
+
     } else {
       //if ($scope.user.attributes.gold >= $scope.shopItem.cost) { //has enough gold to buy item
-        if ($scope.user.attributes.gold >= $scope.currentCost) {
+      if ($scope.user.attributes.gold >= $scope.currentCost) {
         $scope.user.attributes.gold = $scope.user.attributes.gold - $scope.currentCost;
         // add to inventory
         var found = false;
@@ -81,19 +91,19 @@ angular.module('mobile.shop.controllers')
             if (item.storeId === $scope.shopItem['_id']) {
               found = true;
               added = true;
-              item.quantity = item.quantity + $scope.currentQuantity;//increase item quantity
+              item.quantity = item.quantity + $scope.currentQuantity; //increase item quantity
             }
           }
         }
-        
-        if (!found && !added) {//if not in inventory already and not added already
+
+        if (!found && !added) { //if not in inventory already and not added already
           $scope.user.inventory.push({
             id: inventoryId,
             quantity: 1,
             equipped: false,
             storeId: $scope.shopItem['_id']
           });
-        } else if(found && !added) {//if in inventory and not added already
+        } else if (found && !added) { //if in inventory and not added already
           $scope.user.inventory.push({
             id: inventoryId,
             quantity: 1,

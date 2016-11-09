@@ -168,7 +168,7 @@ angular.module('mobile.main.controllers')
     }
   };
 
-  var getAllAlerts = function(){
+  var getAllAlerts = function() {
     alertBattleStatus();
     alertLevelUpStatus();
     alertFriendRequestStatus();
@@ -180,27 +180,39 @@ angular.module('mobile.main.controllers')
   var alertNewShopItem = function() {
     $scope.newItemAlerts = [];
     var userInventory = $scope.user.inventory; //alias var for inventory
-    $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : [];//if seenItems doesnt exist, create it
-   
+    $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : []; //if seenItems doesnt exist, create it
+
     var userTempSeenItems = [];
-    userTempSeenItems = $scope.user.seenItems.concat(userInventory);//add all items from inventory to seen Items with dupes
-    //set $scope.user.seenItems to deduped userTempSeenItems
-    $scope.user.seenItems = _.uniq(userTempSeenItems);
+
+    //push all seenItems into temp array
+    for (var i = 0; i < $scope.user.seenItems; ++i) {
+      userTempSeenItems.push($scope.user.seenItems[i]);
+    }
+
+    //for every item in the users inventory, if the item id is not in userTempSeenItems then add it
+    for (var i = 0; i < userInventory.length; ++i) {
+      //if(!userTempSeenItems.includes(userInventory[i].storeId)){//includes is ecmascript6
+      if (_.contains(userTempSeenItems, userInventory[i].storeId) === false) {
+        userTempSeenItems.push(userInventory[i].storeId);
+      }
+    }
+
+    //set seenItems to temp
+    $scope.user.seenItems = userTempSeenItems;
 
     //get all items from shop
     var shopItems = [];
-    Shop.query( function (items) {
+    Shop.query(function(items) {//everything needs to be done inside the .success
       shopItems = items;
-    });
-
-    //check if user.seenItems contains each shopItem - if not then add new item Alert
-    for(var i = 0; i < shopItems.length; ++i){
-      if(!$scope.user.seenItems.includes(shopItems[i])){
-        addNewItemAlert();
-        return;
+      //check if user.seenItems contains each shopItem - if not then add new item Alert
+      for (var i = 0; i < shopItems.length; ++i) {
+        //if(!$scope.user.seenItems.includes(shopItems[i]._id)){
+        if (_.contains($scope.user.seenItems, shopItems[i]._id) === false) {
+          addNewItemAlert();
+        }
       }
-    }
-    User.update($scope.user);
+      User.update($scope.user);
+    });
   };
 
   var alertBattleStatus = function() {
