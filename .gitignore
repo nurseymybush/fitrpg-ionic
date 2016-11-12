@@ -4,3 +4,4 @@ plugins/
 www/lib
 *.DS_store
 resources/
+res/
