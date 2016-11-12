@@ -9,7 +9,8 @@ angular.module('mobile.shop.controllers')
   $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : [];
   //push item into user.seenItems if not already present
   //if(!$scope.user.seenItems.includes($stateParams.shopId)) $scope.user.seenItems.push($stateParams.shopId);
-  if (_.contains($scope.user.seenItems.includes, $stateParams.shopId) === false) {
+  if (_.contains($scope.user.seenItems, $stateParams.shopId) === false) {
+    console.log('pushing ' + $stateParams.shopId + 'into seenItems');
     $scope.user.seenItems.push($stateParams.shopId);
     User.update($scope.user);
   }
@@ -21,7 +22,6 @@ angular.module('mobile.shop.controllers')
       $scope.currentCost = $scope.shopItem.cost * nextQuantity;
     }
   };
-
 
   $scope.shopItem = Shop.get({
     id: $stateParams.shopId

@@ -98,33 +98,48 @@ angular.module('mobile.inventory.controllers')
       $scope.user.bonusAttributes.vitality = $scope.user.bonusAttributes.vitality +  ($scope.inventoryItem.vitality * pos1orneg1);
       $scope.user.bonusAttributes.endurance = $scope.user.bonusAttributes.endurance + ($scope.inventoryItem.endurance * pos1orneg1);
       $scope.user.bonusAttributes.dexterity = $scope.user.bonusAttributes.dexterity + ($scope.inventoryItem.dexterity * pos1orneg1);
-      $scope.user.bonusAttributes.dexterity = $scope.user.bonusAttributes.hp + ($scope.inventoryItem.hp * pos1orneg1);
+      $scope.user.bonusAttributes.HP = $scope.user.bonusAttributes.HP + ($scope.inventoryItem.hp * pos1orneg1);
 };
 
   var itemSetFn = function(item, inventoryItem, equipped) {//working here
+    console.log("In itemSetFn");
+    console.log(item);
+    console.log(inventoryItem);
+    console.log(equipped);
     var returnItemSet = false;
     if (inventoryItem.type.toLowerCase() === TYPE_WEAPON) {
+      console.log("item is weapon");
       if (inventoryItem.size === 1) {
+        console.log("item size 1");
         if (equipped.weapon1.name === '') {
-          returnItemSet = setEquippedItem(SLOT_WEAPON1, parseFloat(inventoryItem.id), inventoryItem.name) //item is the same as inventoryItem
+          console.log("if weapon 1 slot is empty, then equip 1 handed weapon in slot 1");
+          returnItemSet = setEquippedItem(SLOT_WEAPON1, parseFloat(inventoryItem._id), inventoryItem.name) //item is the same as inventoryItem
         } else if (equipped.weapon2.name === '') {
-          returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem.id), inventoryItem.name)
+          console.log("if weapon 1 slot is not empty, but weapon slot 2 is, then equip 1 handed weapon in slot 2");
+          returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem._id), inventoryItem.name)
         }
       } else if (inventoryItem.size === 2) {
+        console.log("item size 2");
         if (equipped.weapon1.name === '' && equipped.weapon2.name === '') {
-          returnItemSet = setEquippedItem(SLOT_WEAPON1, parseFloat(inventoryItem.id), inventoryItem.name)
-          returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem.id), inventoryItem.name)
+          console.log("if weapon 1 slot is empty, and weapon slot 2 is empty, then equip 2 handed weapon in slot 1 & 2");
+          returnItemSet = setEquippedItem(SLOT_WEAPON1, parseFloat(inventoryItem._id), inventoryItem.name)
+          returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem._id), inventoryItem.name)
         }
       }
     } else if (inventoryItem.type.toLowerCase() === TYPE_ARMOR) {
+      console.log("item is armor");
       if (equipped.armor.name === '') {
-        returnItemSet = setEquippedItem(SLOT_ARMOR, parseFloat(inventoryItem.id), inventoryItem.name)
+        console.log("if no armor equipped, equip armor");
+        returnItemSet = setEquippedItem(SLOT_ARMOR, parseFloat(inventoryItem._id), inventoryItem.name)
       }
     } else if (inventoryItem.type.toLowerCase() === TYPE_ACCESSORY) {
+      console.log("item is accessory");
       if (equipped.accessory1.name === '') {
-        returnItemSet = setEquippedItem(SLOT_ACCESSORY1, parseFloat(inventoryItem.id), inventoryItem.name)
+        console.log("if accessory 1 slot empty, equip accessory in slot 1");
+        returnItemSet = setEquippedItem(SLOT_ACCESSORY1, parseFloat(inventoryItem._id), inventoryItem.name)
       } else if (equipped.accessory2.name === '') {
-        returnItemSet = setEquippedItem(SLOT_ACCESSORY2, parseFloat(inventoryItem.id), inventoryItem.name)
+        console.log("if accessory 1 slot not empty, but slot 2 is, equip accessory in slot 2");
+        returnItemSet = setEquippedItem(SLOT_ACCESSORY2, parseFloat(inventoryItem._id), inventoryItem.name)
       }
     }
     return returnItemSet;

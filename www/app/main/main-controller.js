@@ -182,10 +182,14 @@ angular.module('mobile.main.controllers')
     var userInventory = $scope.user.inventory; //alias var for inventory
     $scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : []; //if seenItems doesnt exist, create it
 
+    console.log("seenItems");
+    console.log($scope.user.seenItems);
+
     var userTempSeenItems = [];
 
     //push all seenItems into temp array
-    for (var i = 0; i < $scope.user.seenItems; ++i) {
+    for (var i = 0; i < $scope.user.seenItems.length; ++i) {
+      console.log('pushing ' + $scope.user.seenItems[i] + ' into userTempSeenItems');
       userTempSeenItems.push($scope.user.seenItems[i]);
     }
 
@@ -193,6 +197,7 @@ angular.module('mobile.main.controllers')
     for (var i = 0; i < userInventory.length; ++i) {
       //if(!userTempSeenItems.includes(userInventory[i].storeId)){//includes is ecmascript6
       if (_.contains(userTempSeenItems, userInventory[i].storeId) === false) {
+        console.log('pushing ' + userInventory[i].storeId + ' into userTempSeenItems');
         userTempSeenItems.push(userInventory[i].storeId);
       }
     }
@@ -208,6 +213,7 @@ angular.module('mobile.main.controllers')
       for (var i = 0; i < shopItems.length; ++i) {
         //if(!$scope.user.seenItems.includes(shopItems[i]._id)){
         if (_.contains($scope.user.seenItems, shopItems[i]._id) === false) {
+          console.log(shopItems[i]._id + ' is not in seenItems. Adding alert.');
           addNewItemAlert();
         }
       }
