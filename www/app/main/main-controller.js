@@ -189,7 +189,7 @@ angular.module('mobile.main.controllers')
 
     //push all seenItems into temp array
     for (var i = 0; i < $scope.user.seenItems.length; ++i) {
-      console.log('pushing ' + $scope.user.seenItems[i] + ' into userTempSeenItems');
+      //console.log('pushing ' + $scope.user.seenItems[i] + ' into userTempSeenItems');
       userTempSeenItems.push($scope.user.seenItems[i]);
     }
 
@@ -197,7 +197,7 @@ angular.module('mobile.main.controllers')
     for (var i = 0; i < userInventory.length; ++i) {
       //if(!userTempSeenItems.includes(userInventory[i].storeId)){//includes is ecmascript6
       if (_.contains(userTempSeenItems, userInventory[i].storeId) === false) {
-        console.log('pushing ' + userInventory[i].storeId + ' into userTempSeenItems');
+        //console.log('pushing ' + userInventory[i].storeId + ' into userTempSeenItems');
         userTempSeenItems.push(userInventory[i].storeId);
       }
     }

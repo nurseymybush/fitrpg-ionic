@@ -29,7 +29,7 @@
         <div ng-show="activeQuest"  class="item">
           <div class="col">
             <p>Your Progress<span class="pull-right medium-text">{{progress}} / {{winGoal}}</span></p>
-            <progressbar max="100" value="(progress*100)/winGoal"></progressbar>
+            <uib-progressbar max="100" value="(progress*100)/winGoal"></uib-progressbar>
           </div>
         </div>
 
@@ -44,7 +44,8 @@
 
     <div class="questTimer" ng-show="activeQuest">
       <timer class="questTimer"end-time="parsedDate"> You have {{days}} day(s), {{hours}} hour(s), {{minutes}} minute(s), and {{seconds}} second(s) remaining.</timer><br><br>
-      <button class="button-custom" ng-click="manualCompleteQuest()">Complete this Quest</button>
+      <button class="button-custom" ng-click="cancelQuest()">Cancel</button>
+      <button class="button-custom" ng-click="manualCompleteQuest()">Complete</button>
     </div>
   </ion-content>
 </ion-view>

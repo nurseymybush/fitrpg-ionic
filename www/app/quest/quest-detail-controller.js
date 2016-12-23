@@ -12,7 +12,7 @@ angular.module('mobile.quest.controllers')
 
 // This particular controller handles the individual pages of each quest
 .controller('QuestDetailCtrl', function($scope, $state, $stateParams, Quests, $ionicPopup, User, TimesData, DatesData, daysWeek, finishQuest, NewTimesData, $cordovaSocialSharing) {
-  var questId = $stateParams.questId
+  var questId = $stateParams.questId;
   $scope.quest = Quests.get({id: questId});
   $scope.availableQuest = true;
   $scope.activeQuest = false;
@@ -96,6 +96,24 @@ angular.module('mobile.quest.controllers')
     }
   };
 
+  $scope.cancelQuest = function () {
+      console.log('canceling Quest ' + questId);
+      //get index of quest
+      var indexOfQuest;
+      for (var i = 0; i < $scope.user.quests.length; i++) {
+        if ($scope.user.quests[i].questId === questId) {
+          indexOfQuest = i;
+        }
+      }
+      console.log($scope.user.quests[indexOfQuest]);
+      //remove from quests array in user object 
+      $scope.user.quests.splice(indexOfQuest, 1);
+      //update user
+      User.update($scope.user);      
+      //state change to app.quests
+      $state.go('app.quest');
+    };
+
   // function that helps us format the times for dates to make calls to fitbit, so '5' is '05'
   var timify = function(time) {
     if (time.length === 1) {
@@ -106,7 +124,7 @@ angular.module('mobile.quest.controllers')
 
   $scope.startQuest = function() {
 
-    var numDays   = $scope.quest.numDays;
+    var numDays = $scope.quest.numDays;
     var numHours = $scope.quest.numHours;
     var winGoal = $scope.quest.winGoals;
     var gold = $scope.quest.gold;
@@ -187,14 +205,15 @@ angular.module('mobile.quest.controllers')
         title    = 'Success!';
         body     = 'Congratulations! You completed this quest. You won ' + $scope.userQuest.gold + ' gold pieces.';
         message  = 'I completed my quest: ' + $scope.userQuest.shortDesc + ' I\'m super fit! @fitrpg';
-        endQuest = finishQuest.winQuest;
+        endQuest = finishQuest.winQuest;//set endQuest alias to win service function
       } else {
         title    = 'Fail!';
         body     = 'Sorry, you did not complete your quest on time. You lost gold. Try again later.';
         message  = 'I didn\'t complete my quest: ' + $scope.userQuest.shortDesc + ' I need to train more. @fitrpg';
-        endQuest = finishQuest.loseQuest;
+        endQuest = finishQuest.loseQuest;//set endQuest alias to lose service function
       }
-      User.update(endQuest($scope.user,$scope.userQuest));
+      User.update(endQuest($scope.user,$scope.userQuest));//endQuest() is a user because finishQuest.winQuest or loseQuest returns user
+      //this is updating local user and server user in one step
       util.showPrompt($ionicPopup, title, body, 'Share', 'Continue',
         function() {
           sendTweet(message);
