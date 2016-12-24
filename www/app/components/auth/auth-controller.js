@@ -5,7 +5,7 @@ angular.module('mobile.authentication.controllers')
   var localStorageToken = localStorageService.get('fitbit-token');
   var localStorageTokenDate = JSON.parse(localStorageService.get('token-date'));
 
-  console.log("Start of Autentication");
+  console.log("Start of Authentication");
   if (localStorageService.get('username')) {
     console.log("Entered if username exists");
     if (localStorageToken && isTokenInDate(localStorageTokenDate)) {
