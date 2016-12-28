@@ -62,7 +62,7 @@ angular.module('mobile.resource.services')
 }])
 
 .factory('ShopItemsByIds', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
-  return $resource(SERVER_URL + '/api/items/getListItems/', { post: { method: 'POST' }} );
+  return $resource(SERVER_URL + '/api/items/getListItems/',{}, { post: { method: 'POST' , params: {ids: '@ids'}}} );
 }])
 
 .factory('Battle', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {

@@ -53,7 +53,7 @@ angular.module('mobile.inventory.controllers')
     console.log(tempList);
     //send list of ids to server
     //it should return [{id:id1, sellPrice:sellPrice1}, {id:id2, sellPrice:sellPrice2}]
-    ShopItemsByIds.post(tempList).$promise.function(items){
+    ShopItemsByIds.post(tempList).$promise.then(function(items){
       
       //foreach object in this list
       for(var item in items) {
