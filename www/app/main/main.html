@@ -1,4 +1,5 @@
-<ion-view title="" hide-back-button="true" ng-init="refresh()">
+<!--<ion-view title="" hide-back-button="true" ng-init="refresh()">--><!--chance change to stop refreshing alot-->
+  <ion-view title="" hide-back-button="true">
 
   <ion-nav-buttons side="left">
     <button menu-toggle="left" class="button button-icon icon-gray icon ion-navicon"></button>
@@ -17,17 +18,12 @@
       on-refresh="refresh()">
     </ion-refresher>
 
-    <!--<alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-click="navTo('battle')" close="closeAlert($index)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in levelUpAlerts" type="{{alert.type}}" close="closeLevelUpAlert($index)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in friendRequestAlerts" type="{{alert.type}}" ng-click="navTo('friends')" close="closeFriendRequestAlert($index)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in questAlerts" type="{{alert.type}}" ng-click="navTo('quest')" close="closeQuestAlert($index)" ng-show="showAlert">{{alert.msg}}</alert>
-    <-->
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-click="navTo('battle')" close="closeAlertsRefactored($index, alerts)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in levelUpAlerts" type="{{alert.type}}" close="closeAlertsRefactored($index, levelUpAlerts)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in friendRequestAlerts" type="{{alert.type}}" ng-click="navTo('friends')" close="closeAlertsRefactored($index, friendRequestAlerts)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in newItemAlerts" type="{{alert.type}}" ng-click="navTo('shop')" close="closeAlertsRefactored($index, newItemAlerts)" ng-show="showAlert">{{alert.msg}}</alert>
-    <alert ng-repeat="alert in questAlerts" type="{{alert.type}}" ng-click="navTo('quest')" close="closeAlertsRefactored($index, questAlerts)" ng-show="showAlert">{{alert.msg}}</alert>
-
+    <!-- new angular-bootstrap code to display alerts-->
+    <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-'+alert.type" ng-click="navTo('battle')" close="closeAlertsRefactored($index, alerts)" ng-show="showAlert">{{alert.msg}}</div>
+    <div uib-alert ng-repeat="alert in levelUpAlerts" ng-class="'alert-'+alert.type" close="closeAlertsRefactored($index, levelUpAlerts)" ng-show="showAlert">{{alert.msg}}</div>
+    <div uib-alert ng-repeat="alert in friendRequestAlerts" ng-class="'alert-'+alert.type" ng-click="navTo('friends')" close="closeAlertsRefactored($index, friendRequestAlerts)" ng-show="showAlert">{{alert.msg}}</div>
+    <div uib-alert ng-repeat="alert in newItemAlerts" ng-class="'alert-'+alert.type" ng-click="navTo('shop')" close="closeAlertsRefactored($index, newItemAlerts)" ng-show="showAlert">{{alert.msg}}</div>
+    <div uib-alert ng-repeat="alert in questAlerts" ng-class="'alert-'+alert.type" ng-click="navTo('quest')" close="closeAlertsRefactored($index, questAlerts)" ng-show="showAlert">{{alert.msg}}</div>
 
     <div class="list">
       <div class="card">

@@ -1,6 +1,6 @@
 angular.module('mobile.authentication.controllers')
 
-.controller('AuthenticationController', function($scope, $state, $ionicLoading, User, localStorageService) {
+.controller('AuthenticationController', function($scope, $state, $ionicLoading, User, localStorageService, Refresh) {
   // Check our local storage for the proper credentials to ensure we are logged in, this means users can't get past app unless they select a username
   var localStorageToken = localStorageService.get('fitbit-token');
   var localStorageTokenDate = JSON.parse(localStorageService.get('token-date'));
@@ -16,6 +16,7 @@ angular.module('mobile.authentication.controllers')
       //refresh token stuff here
       console.log('Entered either fitbit-token is unset or the token is expired');
       $scope.needsAuthentication = true;
+      //Refresh.
     }
   } else if (localStorageToken && isTokenInDate(localStorageTokenDate)) {
     console.log('Entered username doesnt exists but token does and is in date');
@@ -32,10 +33,13 @@ angular.module('mobile.authentication.controllers')
       id: localStorageService.get('userId')
     }, function(user) {
       if (user.username === undefined) {
+        console.log("user.username === undefined");
         $ionicLoading.hide();
         $state.transitionTo('username');
         $scope.Authenticated = true;
       } else {
+        console.log('user.username: ' + user.username);
+        localStorageService.set('username',user.username);
         $ionicLoading.hide();
         $state.transitionTo('app.character');
         $scope.Authenticated = true;
@@ -55,17 +59,21 @@ angular.module('mobile.authentication.controllers')
 });
 
 var isTokenInDate = function(tokenDateString) {
-  //var oneHour = 1;
-  var sevenDays = 7;
+  var oneHour = 1;
+  //var sevenDays = 7;
   var tokenDate = new Date(tokenDateString);
+  console.log('isTokenInDate() tokenDate: ' + tokenDate);
   if (tokenDate) {
     var today = new Date();
     var timeDiff = Math.abs(today.getTime() - tokenDate.getTime());
-    var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-    //var diffHours = Math.ceil(timeDiff / (1000 * 3600));
-    if(diffDays > sevenDays) {
-    //if (diffHours > oneHour) {
-      console.log("token is more than " + sevenDays + " days old.");
+    //var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+    var diffHours = Math.ceil(timeDiff / (1000 * 3600));
+    //if(diffDays > sevenDays) {
+    console.log("isTokenInDate diffHours: " + diffHours);
+    if (diffHours > oneHour) {
+      
+      //console.log("token is more than " + sevenDays + " days old.");
+      console.log("token is more than " + oneHour + " hours old.");
       return false;
     } else { //token is valid
       return true;

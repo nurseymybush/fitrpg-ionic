@@ -73,6 +73,8 @@ angular.module('mobile.inventory.controllers')
       }
       // save user
       User.update($scope.user);
+      localStorageService.set('userData', $scope.user);    
+
       title = 'Item Sold';
       body = 'You received ' + $scope.inventoryItem.sellPrice + ' gold for your item.';
       callback = function() {

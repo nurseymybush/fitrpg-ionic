@@ -24,7 +24,7 @@ angular.module('mobile.authentication.services')
             //trying to figure out what event and result look like
             console.log(e);
             console.log(event);
-            
+            //the variables below come from fitbit-controller-refactor getOauthToken()
             hasToken = event.url.indexOf('?oauth_token=');
             hasUserId = event.url.indexOf('&userId=');
             if (hasToken > -1 && hasUserId > -1) {
@@ -32,7 +32,7 @@ angular.module('mobile.authentication.services')
               //userId = event.url.match('&userId=(.*)')[1];
               var userIdTemp = event.url.match('&userId=(.*)')[1];
               userId = userIdTemp.slice(0, userIdTemp.length - 4);
-              console.log(userId);//console of this doesnt appear
+              console.log('FitbitLogInService() userId: ' + userId);//console of this doesnt appear
               localStorageService.set('fitbit-token', token);
               localStorageService.set('token-date', JSON.stringify(new Date()));
               localStorageService.set('userId', userId);

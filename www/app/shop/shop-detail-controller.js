@@ -1,6 +1,6 @@
 angular.module('mobile.shop.controllers')
 
-.controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q, $cordovaToast) {
+.controller('ShopDetailCtrl', function($scope, $stateParams, $state, Shop, User, $ionicPopup, $q, $cordovaToast,localStorageService) {
   $scope.isWeapon = false;
   $scope.currentQuantity = 1;
   $scope.currentCost;
@@ -113,6 +113,7 @@ angular.module('mobile.shop.controllers')
         }
 
         User.update($scope.user);
+        localStorageService.set('userData', $scope.user);
         util.showAlert($ionicPopup, 'Item Purchased', 'Go to your inventory to equip or use your item.', 'OK', function() {
           $state.go('app.shop');
         });

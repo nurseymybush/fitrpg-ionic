@@ -1,8 +1,9 @@
 angular.module('mobile.inventory.controllers')
 
-.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds) {
+.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds,localStorageService) {
   // inventory is accessed from $rootScope.user.inventory in the template
   var inventory = $scope.user.inventory;
+  //var inventory = localStorageService('userData').inventory;
 
   var makeCopy = function(object) {
     objectCopy = {};
@@ -71,7 +72,8 @@ angular.module('mobile.inventory.controllers')
         $scope.user.inventory.splice(itemIndex, 1);
       }
       //update User
-      User.update($scope.user);    
+      User.update($scope.user);
+      localStorageService.set('userData', $scope.user);    
     });
   }
 

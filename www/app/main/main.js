@@ -5,4 +5,4 @@ angular.module('mobile.main', [
   'mobile.main.controllers'
 ]);
 
-angular.module('mobile.main.controllers', ['LocalStorageModule','ionic']);
+angular.module('mobile.main.controllers', ['LocalStorageModule','ionic', 'ui.bootstrap']);

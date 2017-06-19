@@ -18,12 +18,13 @@ angular.module('mobile.main.controllers')
   localStorageService,
   $window,
   $cordovaToast) {
+
   // initialize $rootScope.user to eliminate console errors before authentication
-  var loading = setTimeout(function() {
-    $ionicLoading.show({
-      template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
-    });
-  }, 500);
+  //var loading = setTimeout(function() {
+  //  $ionicLoading.show({
+  //    template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
+  //  });
+  //}, 500);
 
   $scope.calculatedData = {};
   $scope.alertCount = 0;
@@ -354,7 +355,17 @@ angular.module('mobile.main.controllers')
   //var localUserIdTemp = localStorageService.get('userId');
   //var localUserId = localUserIdTemp.slice(0, localUserIdTemp.length - 4);
   var localUserId = localStorageService.get('userId'); //chance try
-  console.log(localUserId); //'2Q2TVT'; //
+  console.log('main-controller() localUserId(): ' + localUserId); //'2Q2TVT'; //
+  var userData = localStorageService.get('userData');
+  if(userData){
+    console.log('main-controller() localUserData exists');
+    $rootScope.user = userData;
+    calculateData($rootScope.user);
+  } else {
+    console.log('main-controller() localUserData doesnt exist');
+    refresh();
+  }
+
 
   var checkNewData = function() {
     User.get({
@@ -382,7 +393,8 @@ angular.module('mobile.main.controllers')
             //alertQuestStatus();
             $rootScope.user.needsUpdate = false;
             User.update($rootScope.user);
-            clearTimeout(loading);
+            localStorageService.set('userData', $rootScope.user);
+            //clearTimeout(loading);
             $ionicLoading.hide();
           });
         });
@@ -391,6 +403,7 @@ angular.module('mobile.main.controllers')
         alertBattleStatus();
         calculateData($rootScope.user);
         User.update($rootScope.user);
+        localStorageService.set('userData', $rootScope.user);
         clearTimeout(loading);
         $ionicLoading.hide();
       }
@@ -398,15 +411,14 @@ angular.module('mobile.main.controllers')
   }
 
   var refresh = function() {
-    console.log('refreshing');
-    console.log(localUserId);
+    console.log('refresh() userId :' + localUserId);
     Refresh.get({
       id: localUserId
     }, function() { // this will tell fitbit to get new data
       User.get({
         id: localUserId
       }, function(user) { // this will retrieve that new data
-        console.log('in getData part of refresh');
+        console.log('refresh() user:');
         console.log(user);
         $rootScope.user = user;
         calculateData($rootScope.user);
@@ -417,12 +429,13 @@ angular.module('mobile.main.controllers')
         //alertLevelUpStatus();
         //alertFriendRequestStatus();
         User.update($rootScope.user);
-        clearTimeout(loading); //chance add because infinite loading symbol
+        localStorageService.set('userData', $rootScope.user);
+        //clearTimeout(loading); //chance add because infinite loading symbol
         $ionicLoading.hide(); //ditto
         $scope.$broadcast('scroll.refreshComplete');
       });
     });
-    getSettings();
+    //getSettings();
   };
 
   $scope.refresh = refresh;
@@ -534,7 +547,7 @@ angular.module('mobile.main.controllers')
     });
   };
 
-  getSettings();
+  //getSettings();
 
   $scope.rateApp = function() {
     var title = 'Having Fun?';

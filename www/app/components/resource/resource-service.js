@@ -28,6 +28,11 @@ angular.module('mobile.resource.services')
   return $resource(SERVER_URL + '/fitbit/refresh/:id', {id: '@id'});
 }])
 
+//new 6-18-17 trying to refresh token
+.factory('AuthRefresh', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
+  return $resource(SERVER_URL + '/fitbit/authrefresh/:userId/:accessToken/:refreshtoken', {userId: '@userId', accessToken:'@acccessToken', refreshToken:'@refreshToken'});
+}])
+
 .factory('Settings', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
   return $resource(SERVER_URL + '/settings/:id', {id: '@id'});
 }])
