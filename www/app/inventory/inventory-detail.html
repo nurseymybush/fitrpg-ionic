@@ -11,7 +11,8 @@
 
         <div class="item item-body" ng-hide="checkType()">
           <p class="pull-left">
-            Strength<br><br> Vitality
+            Strength
+            <br><br> Vitality
             <br><br> Endurance
             <br><br> Dexterity
             <br><br>
@@ -51,7 +52,9 @@
             <i class="icon ion-pricetag"></i> Sell
           </a>
           <a class="tab-item" ng-click="equipItem()" ng-hide="checkType()">
-            <i class="icon ion-person-add"></i> Equip
+            <!--<i class="icon ion-person-add"></i> Equip-->
+            <i class="icon ion-person-minus"></i> Unequip
+            <!--removal icon is icon-person-minus https://icomoon.io/#preview-free-->
           </a>
           <a class="tab-item" ng-click="useItem()" ng-show="checkType()">
             <i class="icon ion-person-add"></i> Use

@@ -30,7 +30,7 @@ angular.module('mobile.battle.controllers')
   var tabSettings = function(tab) {
     if (tab === 'boss') {
       $scope.friendsTab = false;
-      $scope.showHistory = false;
+      $scope.showHistory = true;
       $scope.showRandom = false;
     } else if (tab === 'friend') {
       $scope.friendsTab = true;
@@ -39,7 +39,7 @@ angular.module('mobile.battle.controllers')
     } else if (tab === 'history') {
       $scope.friendsTab = true;
       $scope.showHistory = false;
-      $scope.showRandom = false;
+      $scope.showRandom = true;
     }
   };
 

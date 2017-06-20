@@ -1,9 +1,10 @@
 angular.module('mobile.inventory.controllers')
 
-.controller('InventoryDetailCtrl', function($scope, $state, $stateParams, Shop, User, $ionicPopup, $q) {
+.controller('InventoryDetailCtrl', function($scope, $state, $stateParams, Shop, User, $ionicPopup, $q, localStorageService) {
   var item;
   var index;
-  var inventory = $scope.user.inventory; //might need to use rootscope, got an error
+  //var inventory = $scope.user.inventory; //might need to use rootscope, got an error
+  var inventory = localStorageService.get('userData').inventory;
 
   //CONST VARS
   var TYPE_WEAPON = "weapon";
@@ -119,13 +120,20 @@ angular.module('mobile.inventory.controllers')
         } else if (equipped.weapon2.name === '') {
           console.log("if weapon 1 slot is not empty, but weapon slot 2 is, then equip 1 handed weapon in slot 2");
           returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem._id), inventoryItem.name)
+        } else {
+          //change setEquppedItem to allow unequips
+          //unequip 
         }
+
       } else if (inventoryItem.size === 2) {
         console.log("item size 2");
         if (equipped.weapon1.name === '' && equipped.weapon2.name === '') {
           console.log("if weapon 1 slot is empty, and weapon slot 2 is empty, then equip 2 handed weapon in slot 1 & 2");
           returnItemSet = setEquippedItem(SLOT_WEAPON1, parseFloat(inventoryItem._id), inventoryItem.name)
           returnItemSet = setEquippedItem(SLOT_WEAPON2, parseFloat(inventoryItem._id), inventoryItem.name)
+        } else {
+          //change setEquppedItem to allow unequips
+          //unequip
         }
       }
     } else if (inventoryItem.type.toLowerCase() === TYPE_ARMOR) {
@@ -149,10 +157,13 @@ angular.module('mobile.inventory.controllers')
 
   $scope.equipItem = function() {//working here
     if (item.equipped === false) {
-      if (itemSetFn(item, $scope.inventoryItem, $scope.user.equipped) === true) {
+      var isItemEquipped = itemSetFn(item, $scope.inventoryItem, $scope.user.equipped);
+      console.log('equipItem() isItemEquipped: ' + isItemEquipped);
+      if (isItemEquipped === true) {
         item.equipped = true;
         addRemoveItemAttributes(1);
         User.update($scope.user);
+        localStorageService.set('userData', $scope.user);  
         util.showAlert($ionicPopup, 'Item Equipped', 'You are ready to wage war against the forces of evil.', 'OK', function() {
           $state.go('app.inventory');
         })
@@ -166,6 +177,7 @@ angular.module('mobile.inventory.controllers')
       item.equipped = false;
       addRemoveItemAttributes(-1);
       User.update($scope.user);
+      localStorageService.set('userData', $scope.user);  
       util.showAlert($ionicPopup, 'Item Unequipped', 'You have successfully unequipped this item.', 'OK', function() {
         $state.go('app.inventory');
       })
@@ -189,6 +201,7 @@ angular.module('mobile.inventory.controllers')
     }
 
     User.update($scope.user);
+    localStorageService.set('userData', $scope.user);  
     util.showAlert($ionicPopup, 'HP Recovered', 'Your HP is recovering!', 'OK', function() {
       $state.go('app.inventory');
     })

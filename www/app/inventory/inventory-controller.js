@@ -1,9 +1,9 @@
 angular.module('mobile.inventory.controllers')
 
-.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds,localStorageService) {
+.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds, localStorageService) {
   // inventory is accessed from $rootScope.user.inventory in the template
-  var inventory = $scope.user.inventory;
-  //var inventory = localStorageService('userData').inventory;
+  //var inventory = $scope.user.inventory;
+  var inventory = localStorageService.get('userData').inventory;
 
   var makeCopy = function(object) {
     objectCopy = {};
