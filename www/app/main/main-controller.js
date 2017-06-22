@@ -20,11 +20,11 @@ angular.module('mobile.main.controllers')
   $cordovaToast) {
 
   // initialize $rootScope.user to eliminate console errors before authentication
-  //var loading = setTimeout(function() {
-  //  $ionicLoading.show({
-  //    template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
-  //  });
-  //}, 500);
+  /*var loading = setTimeout(function() {
+    $ionicLoading.show({
+      template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
+    });
+  }, 500);*/
 
   $scope.calculatedData = {};
   $scope.alertCount = 0;
@@ -141,9 +141,7 @@ angular.module('mobile.main.controllers')
 
   var calculateData = function(user) { //adding bonusAttributes to userAttributes and fitbitAttributes
     //$scope.calculatedData is what gets shown to the user in main page
-    console.log('in calculateData');
     if (user.attributes != undefined) {
-      console.log('in if(user.attributes != undefined)');
       $scope.calculatedData.currentXp = Math.floor(util.currentLevelExp(user.attributes.level, user.fitbit.experience + user.attributes.experience));
 
       $scope.calculatedData.requiredXp = util.nextLevelExp(user.attributes.level);
@@ -152,12 +150,21 @@ angular.module('mobile.main.controllers')
       $scope.calculatedData.dexterity = user.attributes.dexterity + user.fitbit.dexterity + user.bonusAttributes.dexterity;
       $scope.calculatedData.endurance = user.attributes.endurance + user.fitbit.endurance + user.bonusAttributes.endurance;
       $scope.calculatedData.maxHp = util.vitalityToHp($scope.calculatedData.vitality, $scope.user.characterClass); //change to $scope.user.characterClass
+      
+      console.log('maincontroller() calculateData() user.fitbit.HPrecov: ' + user.fitbit.HPRecov);
+      console.log('maincontroller() calculateData() user.bonusAttributes.HP: ' + user.bonusAttributes.HP);
+      
+      console.log('maincontroller() calculateData() user.attributes.HP before: ' + user.attributes.HP);
       user.attributes.HP += user.fitbit.HPRecov + user.bonusAttributes.HP;
 
-      console.log('MaxHP');
-      console.log($scope.calculatedData.maxHp);
-      console.log('HP');
-      console.log(user.attributes.HP);
+      console.log('maincontroller() calculateData() $scope.calculatedData.maxHp: ' + $scope.calculatedData.maxHp);
+      console.log('maincontroller() calculateData() user.attributes.HP after: ' + user.attributes.HP);
+
+      if(user.attributes.HP < 0) {
+        user.attributes.HP = 0;
+        console.log('maincontroller() calculateData() if(user.attributes.HP < 0) main.attributes.HP: ' + user.attributes.HP);
+      }
+
 
       user.fitbit.HPRecov = 0;
       if (user.attributes.HP > $scope.calculatedData.maxHp) {
@@ -404,7 +411,7 @@ angular.module('mobile.main.controllers')
         calculateData($rootScope.user);
         User.update($rootScope.user);
         localStorageService.set('userData', $rootScope.user);
-        clearTimeout(loading);
+        //clearTimeout(loading);
         $ionicLoading.hide();
       }
     });
@@ -519,6 +526,15 @@ angular.module('mobile.main.controllers')
       $rootScope.user.bonusAttributes.endurance -= item.endurance;
       $rootScope.user.bonusAttributes.dexterity -= item.dexterity;
       $rootScope.user.bonusAttributes.HP -= item.hp;
+
+
+      //bonusAttributes cant be negative
+      if($rootScope.user.bonusAttributes.strength < 0) $rootScope.user.bonusAttributes.strength = 0;
+      if($rootScope.user.bonusAttributes.vitality < 0) $rootScope.user.bonusAttributes.vitality = 0;
+      if($rootScope.user.bonusAttributes.endurance < 0) $rootScope.user.bonusAttributes.endurance = 0;
+      if($rootScope.user.bonusAttributes.dexterity < 0) $rootScope.user.bonusAttributes.dexterity = 0;
+      if($rootScope.user.bonusAttributes.HP < 0) $rootScope.user.bonusAttributes.HP = 0;
+
       calculateData($rootScope.user);
       User.update($rootScope.user);
     })

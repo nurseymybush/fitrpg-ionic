@@ -4,14 +4,27 @@ angular.module('mobile.quest.controllers')
 .controller('QuestCtrl', function($scope, $ionicLoading, $ionicScrollDelegate, localStorageService, SoloMissions, Quests, User, TimesData, DatesData) {
 
   $scope.allTab = 'button-tab-active';
+  var userQuests;
+  var localUser = localStorageService.get('userData');
+  if(localUser) {
+    userQuests = localUser.quests;
+  } else {
+    User.get({
+      id: localStorageService.get('userId')
+    }, function(user) {
+      userQuests = user.quests;
+    });
+  }
+  
+  
   $scope.all = function() {
     
     // Creates the loading screen that only shows up after 500 ms if items have not yet loaded
-    var loading = setTimeout(function() {
+    /*var loading = setTimeout(function() {
       $ionicLoading.show({
         template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
       });
-    }, 500);
+    }, 500);*/
 
     $scope.isAll = true;
     $scope.isActive = false;
@@ -25,19 +38,23 @@ angular.module('mobile.quest.controllers')
 
     // Create an array of ids of quests the user is currently doing
     var currentQuests = [];
-    for (var i = 0; i < $scope.user.quests.length; i++) {
-      currentQuests.push($scope.user.quests[i].questId);
+    for(var i = 0; i< userQuests.length; ++i) {
+    //for (var i = 0; i < $scope.user.quests.length; i++) {
+      //currentQuests.push($scope.user.quests[i].questId);
+      currentQuests.push(userQuests[i].questId);
     }
     // Compare all quests against this array and only display them if they're not on it
     Quests.query(function(quests) {
       $scope.quests = quests;
       for (var i = 0; i < $scope.quests.length; i++) {
-        if (currentQuests.indexOf($scope.quests[i]._id) < 0) {
+        var index = currentQuests.indexOf($scope.quests[i]._id);
+        if (index < 0) {
+          console.log('quest not found in list, id:' + $scope.quests[i]._id);
           $scope.availableQuests.push($scope.quests[i]);
         }
       }
-      clearTimeout(loading);
-      $ionicLoading.hide();
+      //clearTimeout(loading);
+      //$ionicLoading.hide();
       $scope.$broadcast('scroll.refreshComplete');
     });
   };
@@ -54,11 +71,14 @@ angular.module('mobile.quest.controllers')
 
     var today = new Date();
     $scope.quests = [];
-    for (var i = 0; i < $scope.user.quests.length; i++) {
-      if ($scope.user.quests[i].status === 'active') {
+    for(var i = 0; i < userQuests.length; ++i) {
+    //for (var i = 0; i < $scope.user.quests.length; i++) {
+      //if ($scope.user.quests[i].status === 'active') {
+      if(userQuests[i].status === 'active'){
         (function(i) {
           Quests.get({
-            id: $scope.user.quests[i].questId
+            //id: $scope.user.quests[i].questId
+            id:userQuests[i].questId
           }, function(q) {
             $scope.quests.push(q);
           });
@@ -83,12 +103,15 @@ angular.module('mobile.quest.controllers')
 
     // Iterate over all the quests that the user has stored; maybe eventually just save them
     // locally to the user object
-    for (var j = 0; j < $scope.user.quests.length; j++) {
+    //for (var j = 0; j < $scope.user.quests.length; j++) {
+    for(var j = 0; j < userQuests.length; ++j) {
       (function(i) {
-        var quest = $scope.user.quests[i];
+        //var quest = $scope.user.quests[i];
+        var quest = userQuests[i];
         var completeDate = new Date(quest.completionTime); //convert date to matched format
         // Iterate over all the quests and get the ones that have status of completed
         if (quest.status === 'success' || quest.status === 'fail') {
+        //if (quest.status === 'success') {
           // if 7 days have passed since this was completed, they can do it again so we remove it from their user array
           if (completeDate.addDays(7) > today) {
             refreshQuests.push(quest);
@@ -111,6 +134,7 @@ angular.module('mobile.quest.controllers')
 
     $scope.user.quests = refreshQuests;
     User.update($scope.user);
+    localStorageService.set('userData', $scope.user);
   };
 
   $scope.all();

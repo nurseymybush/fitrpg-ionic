@@ -1,11 +1,11 @@
 angular.module('mobile.shop.controllers')
 
 .controller('ShopCtrl', function($rootScope, $state, $scope, Shop, $ionicLoading) {
-  var loading = setTimeout(function(){
+  /*var loading = setTimeout(function(){
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
-  }, 500);
+  }, 500);*/
 
   $scope.rarityColor = function(isRare){
     if(isRare) return "energized";
@@ -34,7 +34,7 @@ angular.module('mobile.shop.controllers')
           $scope.shop.push(item);
         }
       }
-      clearTimeout(loading);
+      //clearTimeout(loading);
       $ionicLoading.hide();
     });
   };

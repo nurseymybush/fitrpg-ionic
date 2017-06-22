@@ -90,8 +90,15 @@ angular.module('mobile.quest.controllers')
           if (cb) { cb(completed) };
         });
       }
-    } else if ($scope.userQuest.status === 'success' || $scope.userQuest.status === 'fail') {
+    //} else if ($scope.userQuest.status === 'success' || $scope.userQuest.status === 'fail') {
+    } else if ($scope.userQuest.status === 'success') {
+      console.log('quest status is success');
       $scope.completedQuest = true;
+      if (cb) {cb()};
+    } else if ($scope.userQuest.status === 'fail') {
+      console.log('quest status is fail');
+      $scope.availableQuest = true;
+      //$scope.completedQuest = true;
       if (cb) {cb()};
     }
   };

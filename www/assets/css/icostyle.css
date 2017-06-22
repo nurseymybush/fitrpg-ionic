@@ -38,6 +38,9 @@
 .icon-locked-fortress:before {
 	content: "\e609";
 }
+.icon-user-minus:before {
+	content: "\e60d";
+}
 .icon-wyvern:before {
 	content: "\e600";
 }

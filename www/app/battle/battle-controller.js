@@ -30,7 +30,7 @@ angular.module('mobile.battle.controllers')
   var tabSettings = function(tab) {
     if (tab === 'boss') {
       $scope.friendsTab = false;
-      $scope.showHistory = true;
+      $scope.showHistory = false;
       $scope.showRandom = false;
     } else if (tab === 'friend') {
       $scope.friendsTab = true;
@@ -46,6 +46,7 @@ angular.module('mobile.battle.controllers')
   tabSettings('friend');
 
   $scope.hasBattles = false;
+  $scope.hasBosses = false; //chance add to show default no boss message
   $scope.isPending = true;
 
   // Set active class on specified tab
@@ -60,11 +61,11 @@ angular.module('mobile.battle.controllers')
 
   activeTab('friend');
 
-  var loading = setTimeout(function() {
+  /*var loading = setTimeout(function() {
     $ionicLoading.show({
       template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
     });
-  }, 500);
+  }, 500);*/
 
   var stopLoading = function() {
     clearTimeout(loading);
@@ -97,7 +98,7 @@ angular.module('mobile.battle.controllers')
     }
 
     if ($scope.user.friends.length === 0) {
-      stopLoading();
+      //stopLoading();
     };
 
     var getFriendData = function(id) {
@@ -117,7 +118,7 @@ angular.module('mobile.battle.controllers')
           console.log(friend);
           $scope.hasBattles = true;
         }
-        stopLoading();
+        //stopLoading();
       });
     };
 
@@ -146,6 +147,7 @@ angular.module('mobile.battle.controllers')
     battles = [];
     $scope.friends = [];
     listOfBattles();
+    //$scope.newBossFights();
     $scope.$broadcast('scroll.refreshComplete');
   };
 
@@ -482,6 +484,7 @@ angular.module('mobile.battle.controllers')
     activeTab('boss');
     tabSettings('boss');
     $scope.soloMissions = [];
+    $scope.completedSoloMissions = [];
     SoloMissions.query(function(solos) {
       var allSoloMissions = solos;
       var soloMission;
@@ -491,37 +494,66 @@ angular.module('mobile.battle.controllers')
         soloMission = allSoloMissions[i];
         if (soloMission.level <= $scope.user.attributes.level && ($scope.user.attributes.level - 6) < (soloMission.level)) {
           for (var j = 0; j < $scope.user.battles.length; j++) {
-            var completedBattle = $scope.user.battles[j];
+            var completedBattle = $scope.user.battles[j]._id;
             if (completedBattle === soloMission['_id']) {
               battleComplete = true;
             }
           }
+          
           if (!battleComplete) {
             $scope.soloMissions.push(soloMission);
+          } else {
+            var completedDate;
+
+            //console.log('newBossFights() completedSolo $scope.user.battles:');
+            //console.log($scope.user.battles);
+
+            for(var h = 0; h < $scope.user.battles.length; ++h){
+              if($scope.user.battles[h]._id === soloMission['_id']){
+                //console.log('newBossFights() completedSolo userCompletedSolo: ' + $scope.user.battles[h]);
+                completedDate = $scope.user.battles[h].dateCompleted;
+                //console.log('newBossFights() completedSolo completedDate: ' + completedDate);
+              }
+            }
+            var completedObj = {
+              "completedDate": completedDate,
+              "missionDetails" : soloMission 
+            };
+            $scope.completedSoloMissions.push(completedObj);
+            //$scope.completedSoloMissions.push(soloMission);
           }
         }
       }
-      stopLoading();
+      //stopLoading();
+      if($scope.soloMissions.length > 0 || $scope.completedSoloMissions.length > 0){ 
+        $scope.hasBosses = true;
+      }
     });
   };
 
   // Show/hide 'difficulty' stars in boss list
-  $scope.difficulty = function(index, num) {
-    return num <= $scope.soloMissions[index].difficulty ? true : false;
+  $scope.difficulty = function(index, num, isCompleted) {
+    var returnBool;
+    if(isCompleted){
+      returnBool = num <= $scope.completedSoloMissions[index].missionDetails.difficulty ? true : false;
+    } else{
+      returnBool = num <= $scope.soloMissions[index].difficulty ? true : false;
+    }
+    return returnBool;
   };
 
   // Show list of completed boss fights
-  $scope.completeBossFights = function() {
+  /*$scope.completeBossFights = function() {
     $scope.soloMissions = [];
     for (var i = 0; i < $scope.user.battles.length; i++) {
-      var completedBattle = $scope.user.battles[i];
+      var completedBattle = $scope.user.battles[i]._id;
       SoloMissions.get({
         id: completedBattle
       }, function(battle) {
         $scope.soloMissions.push(battle);
       });
     }
-  };
+  };*/
 
   // Stat mission with boss
   $scope.startMission = function(missionId) {
@@ -538,13 +570,23 @@ angular.module('mobile.battle.controllers')
       if (winner.result === 'player') {
         $scope.user.attributes.experience += $scope.soloMission.experience;
         $scope.user.attributes.gold += $scope.soloMission.gold;
-        $scope.user.battles.push($scope.soloMission._id);
+        
+        //chance add to instead of just battles = ["1","2"], battles = [{date, id},{date, id}]
+        var completedBattle = {
+          "dateCompleted" : new Date().toLocaleDateString(),
+          "_id": $scope.soloMission._id
+        };
+
+        //$scope.user.battles.push($scope.soloMission._id);
+        $scope.user.battles.push(completedBattle);
         for (var i = 0; i < $scope.soloMissions.length; i++) {
           if ($scope.soloMissions[i]['_id'] === missionId) {
             index = i;
           }
         }
         $scope.soloMissions.splice(index, 1);
+        //$scope.newBossFights();//chance add to create completed boss fights array
+        $scope.completeBossFights.push(index);//chance add to add to completed boss fights array
 
         checkLevel($scope.user);
         body = 'You\'ve crushed evil. You gained ' + $scope.soloMission.experience + ' experience and ' + $scope.soloMission.gold + ' gold';

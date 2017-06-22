@@ -80,26 +80,35 @@
 
     <!-- BOSS FIGHTS -->
     <div ng-hide="friendsTab">
-      <!--       <div class="list">
-        <a class="item item-icon-right item-padding" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" href="#/app/solomission/{{mission['_id']}}">
-          <h2>{{mission.title}}</h2>
-          <p>Level {{mission.level}}</p>
-          <i class="icon icon-gray ion-ios7-arrow-right"></i>
-        </a>
-      </div> -->
       <ion-list>
         <ion-item class="item item-icon-right" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" ng-click="startMission(mission['_id'])">
           <h2>{{mission.title}}</h2>
           <p>Level {{mission.level}}, Difficulty:
-            <i class="ion-star" ng-show="difficulty($index,1)"></i>
-            <i class="ion-star" ng-show="difficulty($index,2)"></i>
-            <i class="ion-star" ng-show="difficulty($index,3)"></i>
-            <i class="ion-star" ng-show="difficulty($index,4)"></i>
-            <i class="ion-star" ng-show="difficulty($index,5)"></i>
+            <i class="ion-star" ng-show="difficulty($index,1,false)"></i>
+            <i class="ion-star" ng-show="difficulty($index,2,false)"></i>
+            <i class="ion-star" ng-show="difficulty($index,3,false)"></i>
+            <i class="ion-star" ng-show="difficulty($index,4,false)"></i>
+            <i class="ion-star" ng-show="difficulty($index,5,false)"></i>
           </p>
           <ion-option-button class="button-positive button-swipe" ng-click="startMission(mission['_id'])">Fight</ion-option-button>
         </ion-item>
+        <span class="item item-padding" ng-hide="hasBosses">No Pending Battles or Requests</span>
       </ion-list>
+      <ion-list>
+        <ion-item class="item item-icon-right" ng-repeat="mission in completedSoloMissions | orderBy: '-completedDate'" type="item-text-wrap">
+          <p style='font-weight: bold;'>Completed on {{mission.completedDate}}</p>
+          <h2>{{mission.missionDetails.title}}</h2>
+          <p>Level {{mission.missionDetails.level}}, Difficulty:
+            <i class="ion-star" ng-show="difficulty($index,1,true)"></i>
+            <i class="ion-star" ng-show="difficulty($index,2,true)"></i>
+            <i class="ion-star" ng-show="difficulty($index,3,true)"></i>
+            <i class="ion-star" ng-show="difficulty($index,4,true)"></i>
+            <i class="ion-star" ng-show="difficulty($index,5,true)"></i>
+          </p> 
+        </ion-item>
+        <span class="item item-padding" ng-hide="hasBosses">No Pending Battles or Requests</span>
+      </ion-list>
+
     </div>
 
   </ion-content>

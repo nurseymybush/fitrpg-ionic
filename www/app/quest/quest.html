@@ -16,7 +16,7 @@
       pulling-text="Pull to refresh..."
       on-refresh="refresh()" >
     </ion-refresher>
-    <alert ng-repeat="alert in alerts" type="{{alert.type}}" ng-click="navTo('quest')" close="closeAlert($index)">{{alert.msg}}</alert>
+    <div uib-alert ng-repeat="alert in alerts" ng-class="'alert-'+alert.type" type="{{alert.type}}" ng-click="navTo('quest')" close="closeAlert($index)">{{alert.msg}}</div>
 
     <div class="list">
 

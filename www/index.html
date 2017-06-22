@@ -10,6 +10,7 @@
   <link href="lib/ionic/css/ionic.css" rel="stylesheet">
   <link href="assets/css/icostyle.css" rel="stylesheet">
   <link href="assets/css/style.css" rel="stylesheet">
+  <link rel="stylesheet" href="lib/font-awesome/css/font-awesome.min.css">
 
   <!-- IF using Sass (run gulp sass first), then uncomment below and remove the CSS includes above
     <link href="css/ionic.app.css" rel="stylesheet">
@@ -25,6 +26,7 @@
     </div>
     <!-- This is what we show if not logged in-->
     <div ng-show="needsAuthentication">
+     <!--<div ng-show="true">--> 
       <div ng-controller='LoginController'>
         <ion-content scroll="false" class="padding dashboard" id="login">
 
@@ -34,7 +36,6 @@
           </div>
 
           <img src="assets/img/fitbit.png" alt="Login with Fitbit" class="loginbutton" ng-click='fitbitlogin()'></img>
-
         </ion-content>
       </div>
     </div>
