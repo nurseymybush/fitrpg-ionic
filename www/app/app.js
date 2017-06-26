@@ -105,6 +105,17 @@ angular.module('mobile', [
     controller: 'UsernameCtrl'
   })
 
+  //chance try to go to auth
+  .state('auth', {
+    url: '/auth',
+    views: {
+      'menuContent': {
+        templateUrl: 'index.html',
+        controller: 'AuthenticationController'
+      }
+    }
+  })
+
   .state('app', {
     url: "/app",
     abstract: true,
@@ -239,6 +250,8 @@ angular.module('mobile', [
       }
     }
   })
+
+  
 })
 
 //PUSH NOTIFICATION FUNCTIONS

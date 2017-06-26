@@ -7,6 +7,7 @@
           <img src="assets/img/arrow.png">
           <h3>{{inventoryItem.name}}</h3>
           <p>Type: {{inventoryItem.type}} | Rare: {{inventoryItem.rare}}</p>
+          <P>Equipped: {{inventoryItem.equipped}}
         </div>
 
         <div class="item item-body" ng-hide="checkType()">
@@ -41,8 +42,12 @@
           <!--<p class="pull-left">>Quantity: </p>
           <p class="pull-right">>{{ inventoryItem.quantity }}</p><br>-->
           <p class="pull-left">HP</p>
-          <p class="pull-right">{{ user.attributes.hp }} <i class="icon ion-ios7-arrow-thin-right"></i>
-            <span ng-class="addClass(inventoryItem.hp)">{{ potionHp }}</span></p><br>
+          <!--<p class="pull-right">{{ user.attributes.hp }} -->
+          <p class="pull-right">{{ userHP }}
+            <i class="icon ion-ios7-arrow-thin-right"></i>
+            <span ng-class="addClass(inventoryItem.hp)">{{ potionHp }}</span>
+          </p>
+          <br>
           <p class="pull-left">Sell Price</p>
           <p class="pull-right">{{ inventoryItem.sellPrice }} Gold</p>
         </div>

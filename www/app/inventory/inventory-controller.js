@@ -1,9 +1,13 @@
 angular.module('mobile.inventory.controllers')
 
-.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds, localStorageService) {
+.controller('InventoryCtrl', function($scope, Shop, $ionicLoading, $ionicPopup, InvService, User, ShopItemsByIds, localStorageService, $rootScope) {
   // inventory is accessed from $rootScope.user.inventory in the template
   //var inventory = $scope.user.inventory;
-  var inventory = localStorageService.get('userData').inventory;
+  
+  var localUser = localStorageService.get('userData');
+  console.log('InventoryCtrl localUser:');
+  console.log(localUser);
+  var inventory = localUser.inventory;
 
   var makeCopy = function(object) {
     objectCopy = {};
@@ -17,11 +21,16 @@ angular.module('mobile.inventory.controllers')
     if(isRare) return "energized";
   }
 
-  var loading = setTimeout(function() {
-    $ionicLoading.show({
-      template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
-    });
-  }, 500);
+  $rootScope.$on("inventoryChange", function (event, args) {
+    console.log('InventoryCtrl $rootScope.$on onInventoryChange');
+    $scope.refresh();
+  });
+
+  //var loading = setTimeout(function() {
+  //  $ionicLoading.show({
+  //    template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
+  //  });
+  //}, 500);
 
   $scope.sellAllUnequippedPrompt = function(){
     var title = 'Sell All';
@@ -38,7 +47,7 @@ angular.module('mobile.inventory.controllers')
     var unequippedItemsIds = [];
 
     console.log("inventory");
-    console.log(inventory);
+    console.log(JSON.stringify(inventory));
 
     for(var i = 0; i < inventory.length; ++i){
       if(inventory[i].equipped === false){
@@ -50,7 +59,8 @@ angular.module('mobile.inventory.controllers')
     //i have the unequipped item ids list now
 
     //this is not what should be done here
-    var tempList = InvService.getInvItemsFromShopIds(unequippedItemsIds, $scope.user.inventory);
+    //var tempList = InvService.getInvItemsFromShopIds(unequippedItemsIds, $scope.user.inventory);
+    var tempList = InvService.getInvItemsFromShopIds(unequippedItemsIds, inventory);
     console.log(tempList);
     //send list of ids to server
     //it should return [{id:id1, sellPrice:sellPrice1}, {id:id2, sellPrice:sellPrice2}]
@@ -59,7 +69,8 @@ angular.module('mobile.inventory.controllers')
       //foreach object in this list
       for(var item in items) {
         //add sell price to users gold
-        $scope.user.attributes.gold = $scope.user.attributes.gold + item.sellPrice;
+        //$scope.user.attributes.gold = $scope.user.attributes.gold + item.sellPrice;
+        localUser.attributes.gold += item.sellPrice;
         
         //get index of item in inventory
         var itemIndex;
@@ -69,32 +80,40 @@ angular.module('mobile.inventory.controllers')
           }
         }
         //remove item from inventory
-        $scope.user.inventory.splice(itemIndex, 1);
+        //$scope.user.inventory.splice(itemIndex, 1);
+        localUser.inventory.splice(itemIndex, 1);
       }
       //update User
-      User.update($scope.user);
+      //User.update($scope.user);
+      User.update(localUser);
       localStorageService.set('userData', $scope.user);    
     });
   }
 
   $scope.getInventory = function() {
     $scope.inventory = [];
+    var localInventory = localStorageService.get('userData').inventory;
     Shop.query(function(storeItems) {
-      for (var i = 0; i < inventory.length; i++) {
-        var itemId = inventory[i].storeId;
+      //for (var i = 0; i < inventory.length; i++) {
+      for (var i = 0; i < localInventory.length; i++) {
+        //var itemId = inventory[i].storeId;
+        var itemId = localInventory[i].storeId;
         for (var j = 0; j < storeItems.length; j++) {
           var storeItem = makeCopy(storeItems[j]);
           if (storeItem['_id'] === itemId) {
-            storeItem['inventoryId'] = inventory[i].id;
-            storeItem['quantity'] = inventory[i].quantity;
-            if (inventory[i].equipped) {
+            //storeItem['inventoryId'] = inventory[i].id;
+            //storeItem['quantity'] = inventory[i].quantity;
+            storeItem['inventoryId'] = localInventory[i].id;
+            storeItem['quantity'] = localInventory[i].quantity;
+            //if (inventory[i].equipped) {
+            if(localInventory[i].equipped) {
               storeItem['equipped'] = 'Equipped';
             }
             $scope.inventory.push(storeItem);
           }
         }
       }
-      clearTimeout(loading);
+      //clearTimeout(loading);
       $ionicLoading.hide();
       checkItems();
     });
@@ -136,6 +155,7 @@ angular.module('mobile.inventory.controllers')
   $scope.getInventory();
 
   $scope.refresh = function() {
+    localUser = localStorageService.get('userData');
     $scope.getInventory();
     $scope.$broadcast('scroll.refreshComplete');
   };
