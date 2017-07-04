@@ -30,17 +30,30 @@ angular.module('mobile.shop.controllers')
       if (isRare) return "energized";
     };
 
-    $scope.isNotOwned = function (item) {
+    $scope.isNotSeen = function (item) {
       //TODO - this logic is now in tow places, shop-detail and shop
-      var notOwned = true;
+      var notSeen = true;
       //var inventory = $scope.user.inventory;
-      var inventory = localUser.inventory;
-      for (var i = 0; i < inventory.length; ++i) {
-        if (item._id === inventory[i].storeId) {
-          notOwned = false;
+      var seenItems = localUser.seenItems;
+      for (var i = 0; i < seenItems.length; ++i) {
+        if (item._id === seenItems[i]) {
+          notSeen = false;
         }
       }
-      return notOwned;
+      return notSeen;
+    };
+
+    $scope.isOwned = function (item) {
+      //TODO - this logic is now in tow places, shop-detail and shop
+      var isOwned = false;
+      //var inventory = $scope.user.inventory;
+      var ownedItems = localUser.inventory;
+      for (var i = 0; i < ownedItems.length; ++i) {
+        if (item._id === ownedItems[i].storeId) {
+          isOwned = true;
+        }
+      }
+      return isOwned;
     };
 
     //TODO - using this in main-controller now too, maybe a refactor would be appropriate

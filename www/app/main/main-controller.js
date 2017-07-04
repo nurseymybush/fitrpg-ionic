@@ -27,6 +27,21 @@ angular.module('mobile.main.controllers')
     $scope.user = localUser;
   }
 
+  $scope.vitalityMultiplier = function(){
+    var multiplier;
+    switch(localUser.characterClass){
+      case 'dexterity':
+        multiplier = 12;
+        break;
+      case 'vitality':
+        multiplier = 15;
+        break;
+      default:
+        multiplier = 10;
+    }
+    return multiplier;
+  }
+
   var calculateData = function(user) { //adding bonusAttributes to userAttributes and fitbitAttributes
     if (user.attributes != undefined) {
       $scope.calculatedData.currentXp = Math.floor(util.currentLevelExp(user.attributes.level, user.fitbit.experience + user.attributes.experience));
@@ -524,7 +539,8 @@ angular.module('mobile.main.controllers')
           // change char class from warrior to user class
           // $rootScope.user.attributes.hp = util.vitalityToHp($rootScope.user.attributes.vitality,'warrior');
           //$scope.calculatedData.maxHp = util.vitalityToHp($rootScope.user.attributes.vitality, 'warrior');
-          $scope.calculatedData.maxHp = util.vitalityToHp(localUser.attributes.vitality, 'warrior');
+          //$scope.calculatedData.maxHp = util.vitalityToHp(localUser.attributes.vitality, 'warrior');
+          $scope.calculatedData.maxHp = util.vitalityToHp(localUser.attributes.vitality,localUser.characterClass);
         }
         //calculateData($rootScope.user);
         calculateData(localUser);

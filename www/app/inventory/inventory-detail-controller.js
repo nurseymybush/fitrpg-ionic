@@ -143,10 +143,15 @@ angular.module('mobile.inventory.controllers')
       $scope.user.bonusAttributes.dexterity = $scope.user.bonusAttributes.dexterity + ($scope.inventoryItem.dexterity * pos1orneg1);
       $scope.user.bonusAttributes.HP = $scope.user.bonusAttributes.HP + ($scope.inventoryItem.hp * pos1orneg1);*/
       localUser.bonusAttributes.strength = localUser.bonusAttributes.strength + ($scope.inventoryItem.strength * pos1orneg1);
+      if(localUser.bonusAttributes.strength < 0) localUser.bonusAttributes.strength = 0;
       localUser.bonusAttributes.vitality = localUser.bonusAttributes.vitality + ($scope.inventoryItem.vitality * pos1orneg1);
+      if(localUser.bonusAttributes.vitality < 0) localUser.bonusAttributes.vitality = 0;
       localUser.bonusAttributes.endurance = localUser.bonusAttributes.endurance + ($scope.inventoryItem.endurance * pos1orneg1);
+      if(localUser.bonusAttributes.endurance < 0) localUser.bonusAttributes.endurance = 0;
       localUser.bonusAttributes.dexterity = localUser.bonusAttributes.dexterity + ($scope.inventoryItem.dexterity * pos1orneg1);
+      if(localUser.bonusAttributes.dexterity < 0) localUser.bonusAttributes.dexterity = 0;
       localUser.bonusAttributes.HP = localUser.bonusAttributes.HP + ($scope.inventoryItem.hp * pos1orneg1);
+      if(localUser.bonusAttributes.HP < 0) localUser.bonusAttributes.HP = 0;
     };
 
     //var itemSetFn = function (item, inventoryItem, equipped) { //working here
@@ -276,7 +281,7 @@ angular.module('mobile.inventory.controllers')
           addRemoveItemAttributes(1);
           //User.update($scope.user);
           User.update(localUser);
-          localStorageService.set('userData', $scope.user);
+          localStorageService.set('userData', localUser);
           $rootScope.$emit("inventoryChange", {});
           util.showAlert($ionicPopup, 'Item Equipped', 'You are ready to wage war against the forces of evil.', 'OK', function () {
             $state.go('app.inventory');
@@ -290,6 +295,7 @@ angular.module('mobile.inventory.controllers')
         //var didSetEmpty = itemSetFn(localItem, $scope.inventoryItem, $scope.user.equipped);
         //var didSetEmpty = itemSetFn(localItem, $scope.inventoryItem, localUser.equipped);
         var didSetEmpty = itemSetFn(localItem, $scope.inventoryItem);
+        console.log('equipItem() didSetEmpty: ' + didSetEmpty);
         localItem.equipped = false;
         addRemoveItemAttributes(-1);
         //User.update($scope.user);

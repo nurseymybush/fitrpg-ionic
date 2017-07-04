@@ -616,6 +616,15 @@ angular.module('mobile.battle.controllers')
   };*/
 
   // Stat mission with boss
+  $scope.startMissionPrompt = function(missionId){
+    var title = 'Fight Boss';
+    var body = 'Are you sure you want to fight this boss?';
+
+    util.showPrompt($ionicPopup, title, body, 'Fight', 'Run', function() {
+      $scope.startMission(missionId);
+    });
+  };
+
   $scope.startMission = function(missionId) {
     $scope.soloMission = SoloMissions.get({
       id: missionId

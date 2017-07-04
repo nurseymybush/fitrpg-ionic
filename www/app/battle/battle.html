@@ -81,7 +81,7 @@
     <!-- BOSS FIGHTS -->
     <div ng-hide="friendsTab">
       <ion-list>
-        <ion-item class="item item-icon-right" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" ng-click="startMission(mission['_id'])">
+        <ion-item class="item item-icon-right" ng-repeat="mission in soloMissions | filter: {type: 'boss'} | orderBy: '-level'" type="item-text-wrap" ng-click="startMissionPrompt(mission['_id'])">
           <h2>{{mission.title}}</h2>
           <p>Level {{mission.level}}, Difficulty:
             <i class="ion-star" ng-show="difficulty($index,1,false)"></i>
@@ -90,7 +90,7 @@
             <i class="ion-star" ng-show="difficulty($index,4,false)"></i>
             <i class="ion-star" ng-show="difficulty($index,5,false)"></i>
           </p>
-          <ion-option-button class="button-positive button-swipe" ng-click="startMission(mission['_id'])">Fight</ion-option-button>
+          <ion-option-button class="button-positive button-swipe" ng-click="startMissionPrompt(mission['_id'])">Fight</ion-option-button>
         </ion-item>
         <span class="item item-padding" ng-hide="hasBosses">No Pending Battles or Requests</span>
       </ion-list>
@@ -106,7 +106,7 @@
             <i class="ion-star" ng-show="difficulty($index,5,true)"></i>
           </p> 
         </ion-item>
-        <span class="item item-padding" ng-hide="hasBosses">No Pending Battles or Requests</span>
+        <!--<span class="item item-padding" ng-hide="hasBosses">No Pending Battles or Requests</span>-->
       </ion-list>
 
     </div>
