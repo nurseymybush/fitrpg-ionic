@@ -40,11 +40,7 @@
     "cordovaPlatforms": [
         "android"
     ],
-    "devDependencies": {
-        "@ionic/cli-plugin-cordova": "1.4.0",
-        "@ionic/cli-plugin-gulp": "1.0.1",
-        "@ionic/cli-plugin-ionic1": "2.0.0"
-    },
+    "devDependencies": {},
     "cordova": {
         "plugins": {
             "cordova-plugin-console": {},

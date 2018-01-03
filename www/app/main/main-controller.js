@@ -27,9 +27,11 @@ angular.module('mobile.main.controllers')
     $scope.user = localUser;
   }
 
+  
   $scope.vitalityMultiplier = function(){
     var multiplier;
-    switch(localUser.characterClass){
+    //switch(localUser.characterClass){
+    switch($scope.user.characterClass){ //localuser isnt available yet
       case 'dexterity':
         multiplier = 12;
         break;
@@ -41,6 +43,7 @@ angular.module('mobile.main.controllers')
     }
     return multiplier;
   }
+  
 
   var calculateData = function(user) { //adding bonusAttributes to userAttributes and fitbitAttributes
     if (user.attributes != undefined) {
@@ -555,7 +558,7 @@ angular.module('mobile.main.controllers')
   $scope.isEquipped = function(slot) {
     //var user = $rootScope.user;
     var user = localUser;
-    if (user && user.equipped[slot].inventoryId !== null) {
+    if (user && (user.equipped[slot].inventoryId !== null || user.equipped[slot].inventoryId !== '')) {
       return true;
     } else {
       return false;

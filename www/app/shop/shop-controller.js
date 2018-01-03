@@ -95,6 +95,7 @@ angular.module('mobile.shop.controllers')
       $scope.getData();
       $scope.$broadcast('scroll.refreshComplete');
     };
+    
     $scope.equipment();
 
     $scope.showList = {

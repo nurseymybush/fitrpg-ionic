@@ -63,11 +63,13 @@ angular.module('mobile.resource.services')
 
 
 .factory('Shop', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
-  return $resource(SERVER_URL + '/api/items/:id', {id : '@id'});
+  //return $resource(SERVER_URL + '/api/items/:id', {id : '@id'});
+  return $resource(SERVER_URL + '/items/:id', {id : '@id'});
 }])
 
 .factory('ShopItemsByIds', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
-  return $resource(SERVER_URL + '/api/items/getListItems/',{}, { post: { method: 'POST' , params: {ids: '@ids'}}} );
+  //return $resource(SERVER_URL + '/api/items/getListItems/',{}, { post: { method: 'POST' , params: {ids: '@ids'}}} );
+  return $resource(SERVER_URL + '/items/getListItems/',{}, { post: { method: 'POST' , params: {ids: '@ids'}}} );
 }])
 
 .factory('Battle', ['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
@@ -75,11 +77,13 @@ angular.module('mobile.resource.services')
 }])
 
 .factory('SoloMissions',['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
-  return $resource(SERVER_URL + '/api/solos/:id', {id : '@id'});
+  //return $resource(SERVER_URL + '/api/solos/:id', {id : '@id'});
+    return $resource(SERVER_URL + '/solos/:id', {id : '@id'});
 }])
 
 .factory('Quests',['$resource', 'SERVER_URL', function($resource, SERVER_URL) {
-  return $resource(SERVER_URL + '/api/quests/:id', {id : '@id'});
+  //return $resource(SERVER_URL + '/api/quests/:id', {id : '@id'});
+  return $resource(SERVER_URL + '/quests/:id', {id : '@id'});
 }])
 
 .factory('VersusMissions',['$resource', 'SERVER_URL', function($resource, SERVER_URL) {

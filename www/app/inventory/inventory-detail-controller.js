@@ -189,7 +189,7 @@ angular.module('mobile.inventory.controllers')
               localUser.equipped[itemTypeText + '1'].name = inventoryItem.name; //remove item slot2 name
               localUser.equipped[itemTypeText + '1'].inventoryId = item.id; //remove item slot2 id
               localUser.equipped[itemTypeText + '2'].name = ''; //remove item slot2 name
-              localUser.equipped[itemTypeText + '2'].inventoryId = ''; //remove item slot2 id
+              localUser.equipped[itemTypeText + '2'].inventoryId = null; //remove item slot2 id
             } else {
               //not sure what to do here yet
               console.log('InventoryDetailCtrl itemSetFn item is size 1 and is not equipped and there are two diff things equipped in slot 1 and 2 and not sure what to remove');
@@ -200,25 +200,25 @@ angular.module('mobile.inventory.controllers')
       } else {
         //unequip
         if (inventoryItem.size > 1) {
-          localUser.equipped[itemTypeText + '1'].name = inventoryItem.name; //remove item slot2 name
-          localUser.equipped[itemTypeText + '1'].inventoryId = item.id; //remove item slot2 id
+          localUser.equipped[itemTypeText + '1'].name = ''; //remove item slot2 name
+          localUser.equipped[itemTypeText + '1'].inventoryId = null; //remove item slot2 id
           localUser.equipped[itemTypeText + '2'].name = ''; //remove item slot2 name
-          localUser.equipped[itemTypeText + '2'].inventoryId = ''; //remove item slot2 id
+          localUser.equipped[itemTypeText + '2'].inventoryId = null; //remove item slot2 id
         } else {
           if (itemTypeText === TYPE_ARMOR) {
             //type is armor
             localUser.equipped[TYPE_ARMOR].name = ''; //remove shop name
-            localUser.equipped[TYPE_ARMOR].inventoryId = ''; //remove inventory id
+            localUser.equipped[TYPE_ARMOR].inventoryId = null; //remove inventory id
           } else {
             //find which slots its equipped in
             if (localUser.equipped[itemTypeText + '1'].inventoryId === item.id) {
               //item equipped in slot 1
               localUser.equipped[itemTypeText + '1'].name = ''; //remove item slot2 name
-              localUser.equipped[itemTypeText + '1'].inventoryId = ''; //remove item slot2 id
+              localUser.equipped[itemTypeText + '1'].inventoryId = null; //remove item slot2 id
             } else {
               //item equipped in slot 2
               localUser.equipped[itemTypeText + '2'].name = ''; //remove item slot2 name
-              localUser.equipped[itemTypeText + '2'].inventoryId = ''; //remove item slot2 id
+              localUser.equipped[itemTypeText + '2'].inventoryId = null; //remove item slot2 id
             }
           }
         }

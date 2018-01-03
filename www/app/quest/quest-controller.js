@@ -132,9 +132,12 @@ angular.module('mobile.quest.controllers')
       }(j));
     }
 
-    $scope.user.quests = refreshQuests;
-    User.update($scope.user);
-    localStorageService.set('userData', $scope.user);
+    //$scope.user.quests = refreshQuests;
+    //User.update($scope.user);
+    //localStorageService.set('userData', $scope.user);
+    localUser.quests = refreshQuests;
+    User.update(localUser);
+    localStorageService.set('userData', localUser);
   };
 
   $scope.all();
