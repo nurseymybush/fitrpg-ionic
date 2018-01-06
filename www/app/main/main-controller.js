@@ -688,4 +688,6 @@ angular.module('mobile.main.controllers')
       }
     )
   };
+
+
 })

@@ -154,6 +154,7 @@
               <uib-progressbar max="100" value="(quest.winGoal*100)/quest.winGoal"></uib-progressbar>
               </div>
           </div>
+          <span class="item item-padding" ng-hide="(user.quests|filter:{status: 'active'}).length > 0">No Active Quests</span>
         </div>
 
       </div>

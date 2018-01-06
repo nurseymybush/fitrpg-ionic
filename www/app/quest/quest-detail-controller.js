@@ -11,13 +11,15 @@ angular.module('mobile.quest.controllers')
 })
 
 // This particular controller handles the individual pages of each quest
-.controller('QuestDetailCtrl', function($scope, $state, $stateParams, Quests, $ionicPopup, User, TimesData, DatesData, daysWeek, finishQuest, NewTimesData, $cordovaSocialSharing) {
+.controller('QuestDetailCtrl', function($scope, $state, $stateParams, Quests, $ionicPopup, User, TimesData, DatesData, daysWeek, finishQuest, NewTimesData, $cordovaSocialSharing, localStorageService, $rootScope) {
   var questId = $stateParams.questId;
   $scope.quest = Quests.get({id: questId});
   $scope.availableQuest = true;
   $scope.activeQuest = false;
   $scope.completedQuest = false;
   $scope.userQuest;
+
+  $scope.user = localStorageService.get('userData');
 
   // Show 1-5 stars on the screen depending on the difficulty
   $scope.difficulty = function(num) {
@@ -116,7 +118,10 @@ angular.module('mobile.quest.controllers')
       //remove from quests array in user object 
       $scope.user.quests.splice(indexOfQuest, 1);
       //update user
-      User.update($scope.user);      
+      User.update($scope.user); 
+      localStorageService.set('userData', $scope.user);
+      $rootScope.$emit("questChange", {});
+     
       //state change to app.quests
       $state.go('app.quest');
     };
@@ -190,6 +195,9 @@ angular.module('mobile.quest.controllers')
       $scope.availableQuest = false;
       $scope.user.quests.push(questObj);
       User.update($scope.user);
+
+      localStorageService.set('userData', $scope.user);
+      $rootScope.$emit("questChange", {});
       $state.go('app.quest');
 
     };
@@ -219,7 +227,10 @@ angular.module('mobile.quest.controllers')
         message  = 'I didn\'t complete my quest: ' + $scope.userQuest.shortDesc + ' I need to train more. @fitrpg';
         endQuest = finishQuest.loseQuest;//set endQuest alias to lose service function
       }
-      User.update(endQuest($scope.user,$scope.userQuest));//endQuest() is a user because finishQuest.winQuest or loseQuest returns user
+      $scope.user = endQuest($scope.user,$scope.userQuest);//endQuest() is a user because finishQuest.winQuest or loseQuest returns user
+      User.update($scope.user);
+      localStorageService.set('userData', $scope.user);
+      $rootScope.$emit("questChange", {});
       //this is updating local user and server user in one step
       util.showPrompt($ionicPopup, title, body, 'Share', 'Continue',
         function() {

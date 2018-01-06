@@ -1,7 +1,7 @@
 angular.module('mobile.quest.controllers')
 
 // This controller handles the list of the quests that show up as all,active,and completed
-.controller('QuestCtrl', function($scope, $ionicLoading, $ionicScrollDelegate, localStorageService, SoloMissions, Quests, User, TimesData, DatesData) {
+.controller('QuestCtrl', function($scope, $ionicLoading, $ionicScrollDelegate, localStorageService, SoloMissions, Quests, User, TimesData, DatesData, $rootScope) {
 
   $scope.allTab = 'button-tab-active';
   var userQuests;
@@ -16,7 +16,12 @@ angular.module('mobile.quest.controllers')
     });
   }
   
-  
+  $rootScope.$on("questChange", function (event, args) {
+    console.log('QuestCtrl $rootScope.$on onQuestChange');
+    $scope.refresh();
+  });
+
+
   $scope.all = function() {
     
     // Creates the loading screen that only shows up after 500 ms if items have not yet loaded

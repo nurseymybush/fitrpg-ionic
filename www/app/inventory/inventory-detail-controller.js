@@ -344,6 +344,7 @@ angular.module('mobile.inventory.controllers')
       //localStorageService.set('userData', $scope.user);  
       User.update(localUser);
       localStorageService.set('userData', localUser);
+      
       $rootScope.$emit("inventoryChange", {});
       util.showAlert($ionicPopup, popupTitle, popupMessage, 'OK', function () {
         $state.go('app.inventory');
