@@ -1,6 +1,6 @@
 angular.module('mobile.shop.controllers')
 
-  .controller('ShopDetailCtrl', function ($scope, $stateParams, $state, Shop, User, $ionicPopup, $q, $cordovaToast, localStorageService) {
+  .controller('ShopDetailCtrl', function ($scope, $stateParams, $state, Shop, User, $ionicPopup, $q, $cordovaToast, localStorageService, $rootScope) {
 
     var getUserPotionQuantity = function () {
       if ($scope.shopItem.type === 'potion') {
@@ -19,7 +19,6 @@ angular.module('mobile.shop.controllers')
 
     var localUser = localStorageService.get('userData');
     $scope.user = localUser;
-    getUserPotionQuantity();
     //if user.seenItems doesnt exist, create it
     //$scope.user.seenItems = $scope.user.seenItems ? $scope.user.seenItems : [];
     //$scope.seenItems = localUser.seenItems;
@@ -27,12 +26,14 @@ angular.module('mobile.shop.controllers')
     //if(!$scope.user.seenItems.includes($stateParams.shopId)) $scope.user.seenItems.push($stateParams.shopId);
     //if (_.contains($scope.user.seenItems, $stateParams.shopId) === false) {
     if (_.contains(localUser.seenItems, $stateParams.shopId) === false) {
-      console.log('pushing ' + $stateParams.shopId + 'into seenItems');
+      console.log('pushing id:' + $stateParams.shopId + ' into seenItems');
       //$scope.user.seenItems.push($stateParams.shopId);
       localUser.seenItems.push($stateParams.shopId);
       //User.update($scope.user);
       User.update(localUser);
       localStorageService.set('userData', localUser);
+      $rootScope.$emit("shopChange", {});
+
     }
 
     $scope.changePotionQuantity = function (posOrMinus) {
@@ -145,6 +146,7 @@ angular.module('mobile.shop.controllers')
           //localStorageService.set('userData', $scope.user);
           User.update(localUser);
           localStorageService.set('userData', localUser);
+          $rootScope.$emit("shopChange", {});
           util.showAlert($ionicPopup, 'Item Purchased', 'Go to your inventory to equip or use your item.', 'OK', function () {
             $state.go('app.shop');
           });
@@ -162,4 +164,5 @@ angular.module('mobile.shop.controllers')
       }
     }
 
+    getUserPotionQuantity();
   });

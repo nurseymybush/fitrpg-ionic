@@ -1,29 +1,37 @@
 angular.module('mobile.shop.controllers')
 
-  .controller('ShopCtrl', function ($rootScope, $state, $scope, Shop, $ionicLoading, localStorageService, $cordovaToast){
+  .controller('ShopCtrl', function ($rootScope, $state, $scope, Shop, $ionicLoading, localStorageService, $cordovaToast) {
     /*var loading = setTimeout(function(){
       $ionicLoading.show({
         template: '<p>Loading...</p><i class="icon ion-loading-c"></i>'
       });
     }, 500);*/
-    $scope.$on('$ionicView.enter', function() {
+    var localUser, inventory;
+
+    $scope.$on('$ionicView.enter', function () {
       console.log('ShopCtrl ionicView.enter');
     });
 
-    var localUser = localStorageService.get('userData');
-    var inventory;
-    if (localUser) {
-      inventory = localUser.inventory;
-      $scope.userGold = localUser.attributes.gold;
-    } else {
-      User.get({
-        id: localStorageService.get('userId')
-      }, function (user) {
-        inventory = user.inventory;
-      }, function(error){
-        console.log('ShopCtrl User.get error:');
-        console.log(error);
-      });
+    $rootScope.$on("shopChange", function (event, args) {
+      console.log('ShopCtrl $rootScope.$on onShopChange');
+      $scope.refresh();
+    });
+
+    var refreshUser = function () {
+      localUser = localStorageService.get('userData');
+      if (localUser) {
+        inventory = localUser.inventory;
+        $scope.userGold = localUser.attributes.gold;
+      } else {
+        User.get({
+          id: localStorageService.get('userId')
+        }, function (user) {
+          inventory = user.inventory;
+        }, function (error) {
+          console.log('ShopCtrl User.get error:');
+          console.log(error);
+        });
+      }
     }
 
     $scope.rarityColor = function (isRare) {
@@ -58,6 +66,7 @@ angular.module('mobile.shop.controllers')
 
     //TODO - using this in main-controller now too, maybe a refactor would be appropriate
     $scope.getData = function () {
+      refreshUser();
       $scope.shop = [];
       Shop.query(function (items) {
         //var userLvl = $scope.user.attributes.level;
@@ -69,7 +78,7 @@ angular.module('mobile.shop.controllers')
           }
         }
         //clearTimeout(loading);
-        $ionicLoading.hide();
+        //$ionicLoading.hide();
       });
     };
 
@@ -89,13 +98,10 @@ angular.module('mobile.shop.controllers')
     $scope.getData();
 
     $scope.refresh = function () {
-      //console.log('shop-controller refresh() force go to auth page');
-      //location.href = "#/app/auth"; //go to auth state, leaves header
-      //$state.transitionTo('auth');
       $scope.getData();
       $scope.$broadcast('scroll.refreshComplete');
     };
-    
+
     $scope.equipment();
 
     $scope.showList = {

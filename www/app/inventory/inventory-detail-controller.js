@@ -110,9 +110,9 @@ angular.module('mobile.inventory.controllers')
         User.update(localUser);
         //localStorageService.set('userData', $scope.user);   
         localStorageService.set('userData', localUser);
-        
+
         //$scope.$broadcast("soldItem", {});//chance try 6-26-2017
-        $rootScope.$emit("inventoryChange", {});//chance try 6-26-2017
+        $rootScope.$emit("inventoryChange", {}); //chance try 6-26-2017
 
         title = 'Item Sold';
         body = 'You received ' + $scope.inventoryItem.sellPrice + ' gold for your item.';
@@ -143,15 +143,15 @@ angular.module('mobile.inventory.controllers')
       $scope.user.bonusAttributes.dexterity = $scope.user.bonusAttributes.dexterity + ($scope.inventoryItem.dexterity * pos1orneg1);
       $scope.user.bonusAttributes.HP = $scope.user.bonusAttributes.HP + ($scope.inventoryItem.hp * pos1orneg1);*/
       localUser.bonusAttributes.strength = localUser.bonusAttributes.strength + ($scope.inventoryItem.strength * pos1orneg1);
-      if(localUser.bonusAttributes.strength < 0) localUser.bonusAttributes.strength = 0;
+      if (localUser.bonusAttributes.strength < 0) localUser.bonusAttributes.strength = 0;
       localUser.bonusAttributes.vitality = localUser.bonusAttributes.vitality + ($scope.inventoryItem.vitality * pos1orneg1);
-      if(localUser.bonusAttributes.vitality < 0) localUser.bonusAttributes.vitality = 0;
+      if (localUser.bonusAttributes.vitality < 0) localUser.bonusAttributes.vitality = 0;
       localUser.bonusAttributes.endurance = localUser.bonusAttributes.endurance + ($scope.inventoryItem.endurance * pos1orneg1);
-      if(localUser.bonusAttributes.endurance < 0) localUser.bonusAttributes.endurance = 0;
+      if (localUser.bonusAttributes.endurance < 0) localUser.bonusAttributes.endurance = 0;
       localUser.bonusAttributes.dexterity = localUser.bonusAttributes.dexterity + ($scope.inventoryItem.dexterity * pos1orneg1);
-      if(localUser.bonusAttributes.dexterity < 0) localUser.bonusAttributes.dexterity = 0;
+      if (localUser.bonusAttributes.dexterity < 0) localUser.bonusAttributes.dexterity = 0;
       localUser.bonusAttributes.HP = localUser.bonusAttributes.HP + ($scope.inventoryItem.hp * pos1orneg1);
-      if(localUser.bonusAttributes.HP < 0) localUser.bonusAttributes.HP = 0;
+      if (localUser.bonusAttributes.HP < 0) localUser.bonusAttributes.HP = 0;
     };
 
     //var itemSetFn = function (item, inventoryItem, equipped) { //working here
@@ -190,11 +190,17 @@ angular.module('mobile.inventory.controllers')
               localUser.equipped[itemTypeText + '1'].inventoryId = item.id; //remove item slot2 id
               localUser.equipped[itemTypeText + '2'].name = ''; //remove item slot2 name
               localUser.equipped[itemTypeText + '2'].inventoryId = null; //remove item slot2 id
-            } else {
-              //not sure what to do here yet
+            } else if (localUser.equipped[itemTypeText + '1'].name === '' && localUser.equipped[itemTypeText + '2'].name !== '') { //weapon1 empty, weapon2 equipped
+              localUser.equipped[itemTypeText + '1'].name = inventoryItem.name; //remove item slot2 name
+              localUser.equipped[itemTypeText + '1'].inventoryId = item.id; //remove item slot2 id
+            } else if(localUser.equipped[itemTypeText + '1'].name !== '' && localUser.equipped[itemTypeText + '2'].name === ''){//weapon1 equipped, weapon2 empty
+              localUser.equipped[itemTypeText + '2'].name = inventoryItem.name; //remove item slot2 name
+              localUser.equipped[itemTypeText + '2'].inventoryId = item.id; //remove item slot2 id
+            } else if(localUser.equipped[itemTypeText + '1'].name !== '' && localUser.equipped[itemTypeText + '2'].name !== ''){//weapon1 equipped, weapon2 empty
+              //not sure what to unequip if both are equipped, maybe have to ask user
               console.log('InventoryDetailCtrl itemSetFn item is size 1 and is not equipped and there are two diff things equipped in slot 1 and 2 and not sure what to remove');
               returnItemSet = false;
-          }
+            }
           }
         }
       } else {
@@ -283,6 +289,8 @@ angular.module('mobile.inventory.controllers')
           User.update(localUser);
           localStorageService.set('userData', localUser);
           $rootScope.$emit("inventoryChange", {});
+          $rootScope.$emit("mainChange", {});
+
           util.showAlert($ionicPopup, 'Item Equipped', 'You are ready to wage war against the forces of evil.', 'OK', function () {
             $state.go('app.inventory');
           })
@@ -303,6 +311,8 @@ angular.module('mobile.inventory.controllers')
         //localStorageService.set('userData', $scope.user);  
         localStorageService.set('userData', localUser);
         $rootScope.$emit("inventoryChange", {});
+        $rootScope.$emit("mainChange", {});
+
         util.showAlert($ionicPopup, 'Item Unequipped', 'You have successfully unequipped this item.', 'OK', function () {
           $state.go('app.inventory');
         })
@@ -344,7 +354,7 @@ angular.module('mobile.inventory.controllers')
       //localStorageService.set('userData', $scope.user);  
       User.update(localUser);
       localStorageService.set('userData', localUser);
-      
+
       $rootScope.$emit("inventoryChange", {});
       util.showAlert($ionicPopup, popupTitle, popupMessage, 'OK', function () {
         $state.go('app.inventory');

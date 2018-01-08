@@ -106,7 +106,6 @@ angular.module('mobile.quest.controllers')
   };
 
   $scope.cancelQuest = function () {
-      console.log('canceling Quest ' + questId);
       //get index of quest
       var indexOfQuest;
       for (var i = 0; i < $scope.user.quests.length; i++) {
@@ -114,14 +113,17 @@ angular.module('mobile.quest.controllers')
           indexOfQuest = i;
         }
       }
+      console.log('canceling Quest ' + questId + " at index " + indexOfQuest);
+
       console.log($scope.user.quests[indexOfQuest]);
       //remove from quests array in user object 
-      $scope.user.quests.splice(indexOfQuest, 1);
+      if($scope.user.quests.length > 1) $scope.user.quests.splice(indexOfQuest, 1);
+      else $scope.user.quests = [];//empty the list if removing the only item, splice doesnt work correctly with only one
       //update user
       User.update($scope.user); 
       localStorageService.set('userData', $scope.user);
       $rootScope.$emit("questChange", {});
-     
+      $rootScope.$emit("mainChange", {});
       //state change to app.quests
       $state.go('app.quest');
     };
@@ -198,6 +200,7 @@ angular.module('mobile.quest.controllers')
 
       localStorageService.set('userData', $scope.user);
       $rootScope.$emit("questChange", {});
+      $rootScope.$emit("mainChange", {});
       $state.go('app.quest');
 
     };

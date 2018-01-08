@@ -27,7 +27,11 @@ angular.module('mobile.main.controllers')
     $scope.user = localUser;
   }
 
-  
+  $rootScope.$on("mainChange", function (event, args) {
+    console.log('MainCtrl $rootScope.$on onMainChange');
+    $scope.refresh();
+  });
+
   $scope.vitalityMultiplier = function(){
     var multiplier;
     //switch(localUser.characterClass){
